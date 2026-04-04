@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>APEXMOVE — The Gym Comes to You</title>
+  <!-- ─── reCAPTCHA v2 — replace YOUR_SITE_KEY with your key from https://www.google.com/recaptcha/admin ─── -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f2ec;
+      --cream: #ede8df;
+      --accent: #3a7ca5;
+      --accent2: #5fa8d3;
+      --steel: #2c2c2c;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    /* ─── LANG TOGGLE ─── */
+    .lang-toggle {
+      display: flex; align-items: center; gap: 0.3rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 0.25rem; border-radius: 2px;
+    }
+    .lang-btn {
+      font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; padding: 0.3rem 0.7rem;
+      border: none; background: transparent;
+      color: rgba(245,242,236,0.5); cursor: pointer;
+      transition: background 0.2s, color 0.2s; border-radius: 1px;
+    }
+    .lang-btn.active { background: var(--accent); color: var(--black); }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.85) 0%, transparent 100%);
+      backdrop-filter: blur(4px);
+    }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.12em; color: var(--white); text-decoration: none; display: flex; flex-direction: column; line-height: 1; }
+    .brand { white-space: nowrap; color: var(--white); }
+    .brand-apex { color: var(--accent); }
+    .logo-tag { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,242,236,0.45); margin-top: 0.25rem; white-space: nowrap; }
+    .nav-right { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-right li a {
+      color: var(--white); text-decoration: none; font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.7; transition: opacity 0.2s;
+    }
+    .nav-right li a:hover { opacity: 1; }
+    .nav-cta { background: var(--accent); color: var(--black) !important; padding: 0.55rem 1.4rem; opacity: 1 !important; font-weight: 700 !important; }
+    .nav-cta:hover { background: var(--accent2) !important; }
+
+    /* ─── HERO ─── */
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+    .hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: 10rem 4rem 6rem; position: relative; z-index: 2; }
+    .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards; }
+    .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 9vw, 10rem); line-height: 0.92; letter-spacing: 0.02em; opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards; }
+    .hero-title .outline { -webkit-text-stroke: 2px var(--white); color: transparent; }
+    .hero-title .filled { color: var(--white); }
+    .hero-title .accent-word { color: var(--accent); }
+    .hero-sub { margin-top: 2rem; font-size: 1.05rem; font-weight: 300; line-height: 1.7; color: rgba(245,242,236,0.65); max-width: 420px; opacity: 0; animation: fadeUp 0.9s ease 0.7s forwards; }
+    .hero-actions { margin-top: 3rem; display: flex; gap: 1rem; align-items: center; opacity: 0; animation: fadeUp 0.9s ease 0.9s forwards; }
+    .btn-primary { background: var(--accent); color: var(--black); padding: 1rem 2.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: none; transition: background 0.2s, transform 0.2s; text-decoration: none; display: inline-block; }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+    .btn-ghost { color: var(--white); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; opacity: 0.7; transition: opacity 0.2s; }
+    .btn-ghost:hover { opacity: 1; }
+    .btn-ghost .arrow { font-size: 1.1rem; transition: transform 0.2s; }
+    .btn-ghost:hover .arrow { transform: translateX(4px); }
+    .hero-right { position: relative; overflow: hidden; }
+    .hero-img-wrap { position: absolute; inset: 0; clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%); }
+    .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%) contrast(1.1); transform: scale(1.05); animation: slowZoom 12s ease-in-out infinite alternate; }
+    .hero-img-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,10,10,0.4) 0%, transparent 60%); }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap { background: var(--accent); padding: 0.9rem 0; overflow: hidden; white-space: nowrap; }
+    .marquee-track { display: inline-flex; animation: marquee 22s linear infinite; }
+    .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.15em; color: var(--black); padding: 0 2.5rem; }
+    .marquee-sep { color: rgba(0,0,0,0.3); }
+
+    /* ─── SHARED SECTION STYLES ─── */
+    .section { padding: 7rem 4rem; }
+    .section-label { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 6rem); line-height: 1; letter-spacing: 0.03em; }
+    .section-title .outline { -webkit-text-stroke: 1.5px var(--white); color: transparent; }
+
+    /* ─── HOW IT WORKS ─── */
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 5rem; border: 1px solid rgba(255,255,255,0.08); }
+    .step { padding: 2.5rem 2rem; border-right: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; }
+    .step:last-child { border-right: none; }
+    .step:hover { background: rgba(74,144,184,0.07); }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: rgba(74,144,184,0.2); line-height: 1; margin-bottom: 1.5rem; }
+    .step-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.7rem; }
+    .step p { font-size: 0.9rem; color: rgba(245,242,236,0.55); line-height: 1.7; }
+
+    /* ─── PROGRAMS ─── */
+    .programs-section { background: var(--cream); color: var(--black); padding: 7rem 4rem; }
+    .programs-section .section-label { color: var(--accent); }
+    .programs-section .section-title { color: var(--black); }
+    .programs-section .section-title .outline { -webkit-text-stroke: 1.5px var(--black); }
+    .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 4rem; }
+    .program-card { background: var(--black); color: var(--white); padding: 2.5rem 2rem; position: relative; overflow: hidden; transition: transform 0.3s; }
+    .program-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+    .program-card:hover { transform: translateY(-6px); }
+    .program-card:hover::before { transform: scaleX(1); }
+    .prog-icon { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; }
+    .prog-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; margin-bottom: 0.7rem; }
+    .prog-desc { font-size: 0.9rem; color: rgba(245,242,236,0.6); line-height: 1.7; margin-bottom: 1.5rem; }
+    .prog-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .prog-features li { font-size: 0.82rem; color: rgba(245,242,236,0.5); display: flex; align-items: center; gap: 0.5rem; }
+    .prog-features li::before { content: '—'; color: var(--accent); font-size: 0.75rem; }
+    .prog-tag { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--accent); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.6rem; }
+
+    /* ─── SIGN UP ─── */
+    .signup-section { background: var(--black); padding: 7rem 4rem; }
+    .signup-sub { text-align: center; font-size: 1rem; font-weight: 300; color: rgba(245,242,236,0.55); max-width: 560px; margin: 1.2rem auto 4rem; line-height: 1.7; }
+    .signup-form { max-width: 760px; margin: 0 auto; }
+    .form-success { display: none; text-align: center; max-width: 480px; margin: 4rem auto 0; }
+    .form-success.visible { display: block; }
+    .success-icon { width: 64px; height: 64px; background: var(--accent); color: var(--black); border-radius: 50%; font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .form-success h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 0.05em; margin-bottom: 0.7rem; }
+    .form-success p { color: rgba(245,242,236,0.6); font-size: 0.95rem; line-height: 1.7; }
+    .form-group-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-field { display: flex; flex-direction: column; gap: 0.45rem; }
+    .form-field.full { margin-bottom: 1rem; }
+    .form-field label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,242,236,0.5); font-weight: 500; }
+    .form-field input, .form-field textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--white); padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; resize: none; width: 100%; }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(245,242,236,0.25); }
+    .form-field input:focus, .form-field textarea:focus { border-color: var(--accent); }
+    .form-hint { font-size: 0.8rem; color: rgba(245,242,236,0.35); margin-bottom: 1rem; margin-top: -0.5rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .service-option { cursor: pointer; }
+    .service-option input { display: none; }
+    .service-box { border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; transition: border-color 0.2s, background 0.2s; text-align: center; }
+    .service-option input:checked + .service-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
+    .service-box:hover { border-color: rgba(74,144,184,0.4); }
+    .svc-icon { font-size: 1.6rem; }
+    .svc-name { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; }
+    .radio-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .radio-option { cursor: pointer; }
+    .radio-option input { display: none; }
+    .radio-box { display: block; border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.8rem; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.06em; transition: border-color 0.2s, background 0.2s; }
+    .radio-option input:checked + .radio-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
+    .radio-box:hover { border-color: rgba(74,144,184,0.4); }
+    .submit-btn { width: 100%; margin-top: 2.5rem; padding: 1.1rem; font-size: 0.9rem; text-align: center; border: none; cursor: pointer; }
+    .coaching-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .coaching-option { cursor: pointer; }
+    .coaching-option input { display: none; }
+    .coaching-box { border: 1px solid rgba(255,255,255,0.1); padding: 1.1rem 1.2rem; transition: border-color 0.2s, background 0.2s; }
+    .coaching-option input:checked + .coaching-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
+    .coaching-box:hover { border-color: rgba(74,144,184,0.4); }
+    .coaching-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .recaptcha-wrap { margin-top: 2rem; }
+    .recaptcha-note { margin-top: 0.6rem; font-size: 0.72rem; color: var(--accent); opacity: 0.8; font-style: italic; }
+
+    /* ─── LAUNCH ANNOUNCEMENT ─── */
+    .launch-section { background: var(--cream); color: var(--black); padding: 7rem 4rem; }
+    .launch-section .section-label { color: var(--accent); }
+    .launch-section .section-title { color: var(--black); }
+    .launch-section .section-title .outline { -webkit-text-stroke: 1.5px var(--black); }
+    .launch-sub { font-size: 1rem; font-weight: 300; color: rgba(10,10,10,0.6); max-width: 540px; margin: 1.2rem 0 4rem; line-height: 1.75; }
+    .launch-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .launch-card { background: var(--black); color: var(--white); padding: 2.5rem 2rem; position: relative; transition: transform 0.3s; }
+    .launch-card:hover { transform: translateY(-5px); }
+    .launch-card--highlight { border-top: 3px solid var(--accent); }
+    .launch-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+    .launch-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.06em; margin-bottom: 0.8rem; color: var(--white); }
+    .launch-card p { font-size: 0.9rem; color: rgba(245,242,236,0.55); line-height: 1.7; }
+
+    /* ─── CTA ─── */
+    .cta-section { background: var(--accent); color: var(--black); padding: 8rem 4rem; text-align: center; position: relative; overflow: hidden; }
+    .cta-section::before { content: 'APEXMOVE'; font-family: 'Bebas Neue', sans-serif; font-size: 22vw; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.07; white-space: nowrap; pointer-events: none; }
+    .cta-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 7vw, 7rem); line-height: 1; letter-spacing: 0.03em; position: relative; }
+    .cta-sub { font-size: 1rem; font-weight: 300; max-width: 480px; margin: 1.5rem auto 3rem; color: rgba(10,10,10,0.75); line-height: 1.7; position: relative; }
+    .btn-dark { background: var(--black); color: var(--white); padding: 1.1rem 3rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.2s; position: relative; }
+    .btn-dark:hover { background: var(--steel); transform: translateY(-2px); }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--black); border-top: 1px solid rgba(255,255,255,0.07); padding: 3rem 4rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.12em; color: var(--white); display: flex; flex-direction: column; line-height: 1; }
+    .footer-tag { font-family: 'DM Sans', sans-serif; font-size: 0.5rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,242,236,0.35); margin-top: 0.25rem; white-space: nowrap; }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a { color: rgba(245,242,236,0.4); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.1em; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { font-size: 0.75rem; color: rgba(245,242,236,0.25); }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes slowZoom { from { transform: scale(1.05); } to { transform: scale(1.12); } }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 8rem 1.5rem 3rem; }
+      .hero-right { height: 55vw; }
+      .hero-img-wrap { clip-path: none; }
+      .section, .programs-section, .testimonials-section, .cta-section, .signup-section { padding: 4rem 1.5rem; }
+      .steps-grid, .programs-grid, .launch-cards, .services-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo" href="#">
+      <span class="brand"><span class="brand-apex">APEX</span>MOVE</span>
+      <span class="logo-tag">Entraînement Mobile &nbsp;|&nbsp; Mobile Fitness</span>
+    </a>
+    <ul class="nav-right">
+      <li class="nav-links"><a href="#how" data-en="How It Works" data-fr="Comment ça marche">How It Works</a></li>
+      <li class="nav-links"><a href="#programs" data-en="Programs" data-fr="Programmes">Programs</a></li>
+      <li class="nav-links"><a href="#signup" class="nav-cta" data-en="Sign Up" data-fr="S'inscrire">Sign Up</a></li>
+      <li>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" id="btnFR" onclick="setLang('fr')">FR</button>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow" data-en="Elite personal training · At your doorstep" data-fr="Entraînement personnel d'élite · À votre porte">Elite personal training · At your doorstep</p>
+      <h1 class="hero-title" id="heroTitle">
+        <span class="outline">YOUR</span><br>
+        <span class="filled">GYM</span><br>
+        <span class="accent-word">COMES</span><br>
+        <span class="filled">TO YOU</span>
+      </h1>
+      <p class="hero-sub"
+         data-en="Certified trainers show up at your home, office, or park — with everything needed for a world-class session. Serving <strong>Montréal</strong> and <strong>Laval</strong>. No commute. No excuses."
+         data-fr="Des entraîneurs certifiés se déplacent chez vous, au bureau ou au parc — avec tout le nécessaire pour une séance de qualité. Service offert à <strong>Montréal</strong> et <strong>Laval</strong>. Pas de trajet. Pas d'excuses.">
+        Certified trainers show up at your home, office, or park — with everything needed for a world-class session. Serving <strong>Montréal</strong> and <strong>Laval</strong>. No commute. No excuses.
+      </p>
+      <div class="hero-actions">
+        <a href="#signup" class="btn-primary" data-en="Book a Session" data-fr="Réserver une séance">Book a Session</a>
+        <a href="#how" class="btn-ghost" id="heroGhostBtn" data-en="See How It Works" data-fr="Comment ça marche">See How It Works <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=80" alt="Personal trainer with client"/>
+        <div class="hero-img-overlay"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item" data-en="Strength Training ✦" data-fr="Musculation ✦">Strength Training <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Endurance &amp; Cardio ✦" data-fr="Endurance &amp; Cardio ✦">Endurance &amp; Cardio <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Massage Therapy ✦" data-fr="Massothérapie ✦">Massage Therapy <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Mobility &amp; Flexibility ✦" data-fr="Mobilité &amp; Flexibilité ✦">Mobility &amp; Flexibility <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="HIIT &amp; Conditioning ✦" data-fr="HIIT &amp; Conditionnement ✦">HIIT &amp; Conditioning <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Senior Fitness ✦" data-fr="Forme Senior ✦">Senior Fitness <span class="marquee-sep">✦</span></span>
+      <!-- duplicate for seamless loop -->
+      <span class="marquee-item" data-en="Strength Training ✦" data-fr="Musculation ✦">Strength Training <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Endurance &amp; Cardio ✦" data-fr="Endurance &amp; Cardio ✦">Endurance &amp; Cardio <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Massage Therapy ✦" data-fr="Massothérapie ✦">Massage Therapy <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Mobility &amp; Flexibility ✦" data-fr="Mobilité &amp; Flexibilité ✦">Mobility &amp; Flexibility <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="HIIT &amp; Conditioning ✦" data-fr="HIIT &amp; Conditionnement ✦">HIIT &amp; Conditioning <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item" data-en="Senior Fitness ✦" data-fr="Forme Senior ✦">Senior Fitness <span class="marquee-sep">✦</span></span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="section-label" data-en="The Process" data-fr="Le processus">The Process</div>
+    <h2 class="section-title">
+      <span data-en="HOW IT " data-fr="COMMENT ÇA ">HOW IT </span><span class="outline" data-en="WORKS" data-fr="MARCHE">WORKS</span>
+    </h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">📋</div>
+        <h3 data-en="Tell Us Your Goals" data-fr="Parlez-nous de vos objectifs">Tell Us Your Goals</h3>
+        <p data-en="Fill out a quick intake form about your fitness level, schedule, and objectives. We match you in under 24 hours." data-fr="Remplissez un court formulaire sur votre niveau de forme, votre horaire et vos objectifs. Nous vous trouvons un entraîneur en moins de 24 heures.">Fill out a quick intake form about your fitness level, schedule, and objectives. We match you in under 24 hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤝</div>
+        <h3 data-en="Meet Your Trainer" data-fr="Rencontrez votre entraîneur">Meet Your Trainer</h3>
+        <p data-en="We pair you with a certified professional who specializes in exactly what you need — and fits your personality." data-fr="Nous vous jumelons avec un professionnel certifié qui se spécialise dans ce dont vous avez besoin — et qui correspond à votre personnalité.">We pair you with a certified professional who specializes in exactly what you need — and fits your personality.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">📍</div>
+        <h3 data-en="Pick Your Spot" data-fr="Choisissez votre lieu">Pick Your Spot</h3>
+        <p data-en="Home, backyard, rooftop, office, local park — anywhere you feel comfortable is where the magic happens." data-fr="Maison, cour arrière, toit-terrasse, bureau, parc local — partout où vous vous sentez à l'aise, c'est là que la magie opère.">Home, backyard, rooftop, office, local park — anywhere you feel comfortable is where the magic happens.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">🔥</div>
+        <h3 data-en="Train &amp; Transform" data-fr="Entraînez-vous &amp; transformez-vous">Train &amp; Transform</h3>
+        <p data-en="Your trainer arrives with all the gear. You just show up as yourself. Progress happens every single session." data-fr="Votre entraîneur arrive avec tout le matériel. Vous n'avez qu'à être présent(e). Des progrès se font à chaque séance.">Your trainer arrives with all the gear. You just show up as yourself. Progress happens every single session.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section class="programs-section" id="programs">
+    <div class="section-label" data-en="What We Offer" data-fr="Ce que nous offrons">What We Offer</div>
+    <h2 class="section-title">
+      <span data-en="OUR " data-fr="NOS ">OUR </span><span class="outline" data-en="PROGRAMS" data-fr="PROGRAMMES">PROGRAMS</span>
+    </h2>
+    <div class="programs-grid">
+
+      <div class="program-card">
+        <span class="prog-icon">🏋️</span>
+        <div class="prog-name" data-en="Strength Training" data-fr="Musculation">Strength Training</div>
+        <p class="prog-desc" data-en="Build lean muscle and functional power with periodized programs designed around your body and equipment we bring." data-fr="Développez de la masse musculaire maigre et de la force fonctionnelle grâce à des programmes périodisés conçus autour de votre corps et du matériel que nous apportons.">Build lean muscle and functional power with periodized programs designed around your body and equipment we bring.</p>
+        <ul class="prog-features">
+          <li data-en="Free weights, resistance bands &amp; more" data-fr="Poids libres, bandes élastiques et plus">Free weights, resistance bands &amp; more</li>
+          <li data-en="Progressive overload programming" data-fr="Programmation en surcharge progressive">Progressive overload programming</li>
+          <li data-en="Nutrition coaching included" data-fr="Coaching nutritionnel inclus">Nutrition coaching included</li>
+          <li data-en="Posture &amp; injury prevention focus" data-fr="Accent sur la posture et la prévention des blessures">Posture &amp; injury prevention focus</li>
+        </ul>
+      </div>
+
+      <div class="program-card">
+        <span class="prog-tag" data-en="Most Popular" data-fr="Le plus populaire">Most Popular</span>
+        <span class="prog-icon">🏃</span>
+        <div class="prog-name" data-en="Endurance Training" data-fr="Entraînement d'endurance">Endurance Training</div>
+        <p class="prog-desc" data-en="Increase cardiovascular capacity, stamina, and mental toughness through structured cardio and conditioning work." data-fr="Augmentez votre capacité cardiovasculaire, votre endurance et votre résilience mentale grâce à un travail de cardio et de conditionnement structuré.">Increase cardiovascular capacity, stamina, and mental toughness through structured cardio and conditioning work.</p>
+        <ul class="prog-features">
+          <li data-en="Run coaching &amp; interval training" data-fr="Coaching à la course et entraînement par intervalles">Run coaching &amp; interval training</li>
+          <li data-en="VO₂ max improvement strategies" data-fr="Stratégies d'amélioration du VO₂ max">VO₂ max improvement strategies</li>
+          <li data-en="Race &amp; event preparation" data-fr="Préparation aux courses et événements">Race &amp; event preparation</li>
+          <li data-en="Recovery protocol guidance" data-fr="Guidance sur les protocoles de récupération">Recovery protocol guidance</li>
+        </ul>
+      </div>
+
+      <div class="program-card">
+        <span class="prog-icon">💆</span>
+        <div class="prog-name" data-en="Massage Therapy" data-fr="Massothérapie">Massage Therapy</div>
+        <p class="prog-desc" data-en="Licensed massage therapists come to your door for deep tissue, sports recovery, and relaxation sessions." data-fr="Des massothérapeutes agréés se déplacent chez vous pour des séances de massage en profondeur, de récupération sportive et de relaxation.">Licensed massage therapists come to your door for deep tissue, sports recovery, and relaxation sessions.</p>
+        <ul class="prog-features">
+          <li data-en="Deep tissue &amp; sports massage" data-fr="Massage en profondeur et massage sportif">Deep tissue &amp; sports massage</li>
+          <li data-en="Post-workout recovery sessions" data-fr="Séances de récupération post-entraînement">Post-workout recovery sessions</li>
+          <li data-en="Myofascial release therapy" data-fr="Thérapie de relâchement myofascial">Myofascial release therapy</li>
+          <li data-en="Stress relief &amp; relaxation" data-fr="Soulagement du stress et relaxation">Stress relief &amp; relaxation</li>
+        </ul>
+      </div>
+
+      <div class="program-card">
+        <span class="prog-icon">🧘</span>
+        <div class="prog-name" data-en="Mobility &amp; Flexibility" data-fr="Mobilité &amp; Flexibilité">Mobility &amp; Flexibility</div>
+        <p class="prog-desc" data-en="Unlock full range of motion, relieve chronic tension, and move better every day with guided mobility work." data-fr="Libérez toute votre amplitude de mouvement, soulagez les tensions chroniques et bougez mieux chaque jour grâce à un travail de mobilité guidé.">Unlock full range of motion, relieve chronic tension, and move better every day with guided mobility work.</p>
+        <ul class="prog-features">
+          <li data-en="Yoga-inspired stretching flows" data-fr="Étirements inspirés du yoga">Yoga-inspired stretching flows</li>
+          <li data-en="Joint mobility protocols" data-fr="Protocoles de mobilité articulaire">Joint mobility protocols</li>
+          <li data-en="Corrective movement coaching" data-fr="Coaching en mouvement correctif">Corrective movement coaching</li>
+          <li data-en="Great for all fitness levels" data-fr="Idéal pour tous les niveaux de forme">Great for all fitness levels</li>
+        </ul>
+      </div>
+
+      <div class="program-card">
+        <span class="prog-icon">⚡</span>
+        <div class="prog-name" data-en="HIIT &amp; Conditioning" data-fr="HIIT &amp; Conditionnement">HIIT &amp; Conditioning</div>
+        <p class="prog-desc" data-en="High-intensity intervals designed for maximum calorie burn and metabolic boost in minimum time." data-fr="Des intervalles à haute intensité conçus pour brûler un maximum de calories et stimuler le métabolisme en un minimum de temps.">High-intensity intervals designed for maximum calorie burn and metabolic boost in minimum time.</p>
+        <ul class="prog-features">
+          <li data-en="30–45 minute sessions" data-fr="Séances de 30 à 45 minutes">30–45 minute sessions</li>
+          <li data-en="Bodyweight or equipment-based" data-fr="Avec ou sans équipement">Bodyweight or equipment-based</li>
+          <li data-en="Heart rate zone training" data-fr="Entraînement par zones de fréquence cardiaque">Heart rate zone training</li>
+          <li data-en="Scalable to any fitness level" data-fr="Adaptable à tous les niveaux">Scalable to any fitness level</li>
+        </ul>
+      </div>
+
+      <div class="program-card">
+        <span class="prog-icon">👴</span>
+        <div class="prog-name" data-en="Senior Fitness" data-fr="Forme Senior">Senior Fitness</div>
+        <p class="prog-desc" data-en="Safe, effective programs built for older adults focusing on balance, bone density, and active longevity." data-fr="Des programmes sûrs et efficaces conçus pour les aîné(e)s, axés sur l'équilibre, la densité osseuse et la longévité active.">Safe, effective programs built for older adults focusing on balance, bone density, and active longevity.</p>
+        <ul class="prog-features">
+          <li data-en="Fall prevention &amp; balance" data-fr="Prévention des chutes et équilibre">Fall prevention &amp; balance</li>
+          <li data-en="Low-impact, joint-friendly" data-fr="Faible impact, doux pour les articulations">Low-impact, joint-friendly</li>
+          <li data-en="Strength for daily activities" data-fr="Force pour les activités quotidiennes">Strength for daily activities</li>
+          <li data-en="Cognitive &amp; social benefits" data-fr="Bénéfices cognitifs et sociaux">Cognitive &amp; social benefits</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SIGN UP -->
+  <section class="signup-section" id="signup">
+    <div class="section-label" data-en="Get Started" data-fr="Commencer">Get Started</div>
+    <h2 class="section-title" style="text-align:center;">
+      <span data-en="LET'S BUILD YOUR " data-fr="CRÉONS VOTRE ">LET'S BUILD YOUR </span><span class="outline" data-en="PLAN" data-fr="PLAN">PLAN</span>
+    </h2>
+    <p class="signup-sub"
+       data-en="Tell us a bit about yourself and what you're looking for. We currently serve <strong style='color:var(--white)'>Montréal and Laval</strong> — we'll match you with the perfect trainer and reach out within 24 hours."
+       data-fr="Parlez-nous un peu de vous et de ce que vous recherchez. Nous desservons actuellement <strong style='color:var(--white)'>Montréal et Laval</strong> — nous vous trouverons l'entraîneur idéal et vous contacterons dans les 24 heures.">
+      Tell us a bit about yourself and what you're looking for. We currently serve <strong style="color:var(--white)">Montréal and Laval</strong> — we'll match you with the perfect trainer and reach out within 24 hours.
+    </p>
+
+    <form class="signup-form" onsubmit="handleSubmit(event)">
+      <div class="form-group-title" data-en="Your Information" data-fr="Vos informations">Your Information</div>
+      <div class="form-row">
+        <div class="form-field">
+          <label data-en="First Name" data-fr="Prénom">First Name</label>
+          <input type="text" id="fname" placeholder="Jane" required />
+        </div>
+        <div class="form-field">
+          <label data-en="Last Name" data-fr="Nom de famille">Last Name</label>
+          <input type="text" id="lname" placeholder="Doe" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label data-en="Email Address" data-fr="Adresse courriel">Email Address</label>
+          <input type="email" id="email" placeholder="jane@example.com" required />
+        </div>
+        <div class="form-field">
+          <label data-en="Phone Number" data-fr="Numéro de téléphone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="+1 (514) 000-0000" />
+        </div>
+      </div>
+      <div class="form-field full">
+        <label>
+          <span data-en="Your Borough or Area" data-fr="Votre arrondissement ou secteur">Your Borough or Area</span><span style="color:var(--accent)" data-en=" — Montréal &amp; Laval only" data-fr=" — Montréal &amp; Laval seulement"> — Montréal &amp; Laval only</span>
+        </label>
+        <input type="text" id="address"
+          data-placeholder-en="e.g. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…"
+          data-placeholder-fr="ex. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…"
+          placeholder="e.g. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…" required />
+      </div>
+
+      <!-- Services -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Services You're Interested In" data-fr="Services qui vous intéressent">Services You're Interested In</div>
+      <p class="form-hint" data-en="Select all that apply." data-fr="Sélectionnez tout ce qui s'applique.">Select all that apply.</p>
+      <div class="services-grid">
+        <label class="service-option"><input type="checkbox" name="service" value="strength"/>
+          <div class="service-box"><span class="svc-icon">🏋️</span><span class="svc-name" data-en="Strength Training" data-fr="Musculation">Strength Training</span></div>
+        </label>
+        <label class="service-option"><input type="checkbox" name="service" value="endurance"/>
+          <div class="service-box"><span class="svc-icon">🏃</span><span class="svc-name" data-en="Endurance Training" data-fr="Entraînement d'endurance">Endurance Training</span></div>
+        </label>
+        <label class="service-option"><input type="checkbox" name="service" value="massage"/>
+          <div class="service-box"><span class="svc-icon">💆</span><span class="svc-name" data-en="Massage Therapy" data-fr="Massothérapie">Massage Therapy</span></div>
+        </label>
+        <label class="service-option"><input type="checkbox" name="service" value="mobility"/>
+          <div class="service-box"><span class="svc-icon">🧘</span><span class="svc-name" data-en="Mobility &amp; Flexibility" data-fr="Mobilité &amp; Flexibilité">Mobility &amp; Flexibility</span></div>
+        </label>
+        <label class="service-option"><input type="checkbox" name="service" value="hiit"/>
+          <div class="service-box"><span class="svc-icon">⚡</span><span class="svc-name" data-en="HIIT &amp; Conditioning" data-fr="HIIT &amp; Conditionnement">HIIT &amp; Conditioning</span></div>
+        </label>
+        <label class="service-option"><input type="checkbox" name="service" value="senior"/>
+          <div class="service-box"><span class="svc-icon">👴</span><span class="svc-name" data-en="Senior Fitness" data-fr="Forme Senior">Senior Fitness</span></div>
+        </label>
+      </div>
+
+      <!-- Interest Level -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Interest Level" data-fr="Niveau d'intérêt">Interest Level</div>
+      <p class="form-hint" data-en="How interested are you in having a personal trainer come to your home?" data-fr="À quel point seriez-vous intéressé(e) par un entraîneur personnel qui se déplace chez vous ?">How interested are you in having a personal trainer come to your home?</p>
+      <div class="radio-row">
+        <label class="radio-option"><input type="radio" name="interest" value="very" required/><span class="radio-box" data-en="Very interested" data-fr="Très intéressé(e)">Very interested</span></label>
+        <label class="radio-option"><input type="radio" name="interest" value="somewhat"/><span class="radio-box" data-en="Somewhat interested" data-fr="Assez intéressé(e)">Somewhat interested</span></label>
+        <label class="radio-option"><input type="radio" name="interest" value="exploring"/><span class="radio-box" data-en="Just exploring options" data-fr="Je me renseigne">Just exploring options</span></label>
+      </div>
+
+      <!-- Training Frequency -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Training Frequency" data-fr="Fréquence d'entraînement">Training Frequency</div>
+      <p class="form-hint" data-en="How often would you realistically train?" data-fr="À quelle fréquence vous entraîneriez-vous de façon réaliste ?">How often would you realistically train?</p>
+      <div class="radio-row">
+        <label class="radio-option"><input type="radio" name="frequency" value="1x"/><span class="radio-box" data-en="1× per week" data-fr="1× par semaine">1× per week</span></label>
+        <label class="radio-option"><input type="radio" name="frequency" value="2x"/><span class="radio-box" data-en="2× per week" data-fr="2× par semaine">2× per week</span></label>
+        <label class="radio-option"><input type="radio" name="frequency" value="3x"/><span class="radio-box" data-en="3× per week" data-fr="3× par semaine">3× per week</span></label>
+        <label class="radio-option"><input type="radio" name="frequency" value="unsure"/><span class="radio-box" data-en="Unsure yet" data-fr="Pas encore certain(e)">Unsure yet</span></label>
+      </div>
+
+      <!-- Primary Goal -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Primary Goal" data-fr="Objectif principal">Primary Goal</div>
+      <p class="form-hint" data-en="What is your main fitness goal?" data-fr="Quel est votre principal objectif de mise en forme ?">What is your main fitness goal?</p>
+      <div class="radio-row" style="flex-wrap:wrap;">
+        <label class="radio-option"><input type="radio" name="goal" value="weight"/><span class="radio-box" data-en="Lose weight" data-fr="Perdre du poids">Lose weight</span></label>
+        <label class="radio-option"><input type="radio" name="goal" value="muscle"/><span class="radio-box" data-en="Build muscle" data-fr="Développer la masse musculaire">Build muscle</span></label>
+        <label class="radio-option"><input type="radio" name="goal" value="fitness"/><span class="radio-box" data-en="General fitness" data-fr="Forme générale">General fitness</span></label>
+        <label class="radio-option"><input type="radio" name="goal" value="mobility"/><span class="radio-box" data-en="Improve mobility" data-fr="Améliorer la mobilité">Improve mobility</span></label>
+        <label class="radio-option"><input type="radio" name="goal" value="consistency"/><span class="radio-box" data-en="Stay consistent" data-fr="Rester constant(e)">Stay consistent</span></label>
+        <label class="radio-option"><input type="radio" name="goal" value="other"/><span class="radio-box" data-en="Other" data-fr="Autre">Other</span></label>
+      </div>
+
+      <!-- Coaching Type -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Type of Coaching" data-fr="Type de coaching">Type of Coaching</div>
+      <p class="form-hint" data-en="Which type of coaching are you looking for?" data-fr="Quel type de coaching recherchez-vous ?">Which type of coaching are you looking for?</p>
+      <div class="coaching-grid">
+        <label class="coaching-option">
+          <input type="radio" name="coaching" value="basic"/>
+          <div class="coaching-box">
+            <div class="coaching-name" data-en="Basic Guidance" data-fr="Guidance de base">Basic Guidance</div>
+            <div class="coaching-desc" data-en="Structured workouts &amp; simple plan" data-fr="Entraînements structurés et plan simple">Structured workouts &amp; simple plan</div>
+          </div>
+        </label>
+        <label class="coaching-option">
+          <input type="radio" name="coaching" value="personal"/>
+          <div class="coaching-box">
+            <div class="coaching-name" data-en="Personal Training" data-fr="Entraînement personnel">Personal Training</div>
+            <div class="coaching-desc" data-en="Custom workouts + progress tracking" data-fr="Entraînements sur mesure + suivi des progrès">Custom workouts + progress tracking</div>
+          </div>
+        </label>
+        <label class="coaching-option">
+          <input type="radio" name="coaching" value="personalized"/>
+          <div class="coaching-box">
+            <div class="coaching-name" data-en="Highly Personalized" data-fr="Très personnalisé">Highly Personalized</div>
+            <div class="coaching-desc" data-en="Fully tailored program + ongoing adjustments" data-fr="Programme entièrement adapté + ajustements continus">Fully tailored program + ongoing adjustments</div>
+          </div>
+        </label>
+        <label class="coaching-option">
+          <input type="radio" name="coaching" value="premium"/>
+          <div class="coaching-box">
+            <div class="coaching-name" data-en="Premium Private" data-fr="Service privé premium">Premium Private</div>
+            <div class="coaching-desc" data-en="Maximum convenience + flexible scheduling" data-fr="Confort maximal + horaire flexible">Maximum convenience + flexible scheduling</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Budget -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Investment Level" data-fr="Niveau d'investissement">Investment Level</div>
+      <p class="form-hint" data-en="Which investment level feels reasonable for a private trainer who comes to you? (optional)" data-fr="Quel niveau d'investissement vous semble raisonnable pour un entraîneur privé qui se déplace ? (facultatif)">Which investment level feels reasonable for a private trainer who comes to you? (optional)</p>
+      <div class="radio-row" style="flex-wrap:wrap;">
+        <label class="radio-option"><input type="radio" name="budget" value="occasional"/><span class="radio-box" data-en="Occasional coaching" data-fr="Coaching occasionnel">Occasional coaching</span></label>
+        <label class="radio-option"><input type="radio" name="budget" value="consistent"/><span class="radio-box" data-en="Consistent personal training" data-fr="Entraînement personnel régulier">Consistent personal training</span></label>
+        <label class="radio-option"><input type="radio" name="budget" value="personalized"/><span class="radio-box" data-en="Highly personalized coaching" data-fr="Coaching très personnalisé">Highly personalized coaching</span></label>
+        <label class="radio-option"><input type="radio" name="budget" value="premium"/><span class="radio-box" data-en="Premium private service" data-fr="Service privé premium">Premium private service</span></label>
+      </div>
+
+      <!-- Biggest Challenge -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Your Biggest Challenge" data-fr="Votre plus grand défi">Your Biggest Challenge</div>
+      <div class="form-field full">
+        <textarea id="challenge" rows="3"
+          data-placeholder-en="e.g. lack of time, lack of motivation, gym too crowded, don't know what to do… (optional)"
+          data-placeholder-fr="ex. manque de temps, manque de motivation, gym trop bondé, je ne sais pas quoi faire… (facultatif)"
+          placeholder="e.g. lack of time, lack of motivation, gym too crowded, don't know what to do… (optional)"></textarea>
+      </div>
+
+      <!-- Fitness Level -->
+      <div class="form-group-title" style="margin-top:2.5rem;" data-en="Your Fitness Level" data-fr="Votre niveau de forme">Your Fitness Level</div>
+      <div class="radio-row">
+        <label class="radio-option"><input type="radio" name="level" value="beginner" required/><span class="radio-box" data-en="Beginner" data-fr="Débutant(e)">Beginner</span></label>
+        <label class="radio-option"><input type="radio" name="level" value="intermediate"/><span class="radio-box" data-en="Intermediate" data-fr="Intermédiaire">Intermediate</span></label>
+        <label class="radio-option"><input type="radio" name="level" value="advanced"/><span class="radio-box" data-en="Advanced" data-fr="Avancé(e)">Advanced</span></label>
+      </div>
+
+      <!-- ─── HONEYPOT (hidden from real users, catches basic bots) ─── -->
+      <input type="text" name="_gotcha" id="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none!important;position:absolute;left:-9999px;" />
+
+      <!-- ─── reCAPTCHA v2 widget ─── -->
+      <!-- Replace data-sitekey value with your own key from https://www.google.com/recaptcha/admin -->
+      <div class="recaptcha-wrap">
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-theme="dark"></div>
+        <p class="recaptcha-note" data-en="⚠️ To activate: replace YOUR_SITE_KEY above with your key from Google reCAPTCHA admin." data-fr="⚠️ Pour activer : remplacez YOUR_SITE_KEY ci-dessus par votre clé depuis Google reCAPTCHA admin.">⚠️ To activate: replace YOUR_SITE_KEY with your key from Google reCAPTCHA admin.</p>
+      </div>
+
+      <button type="submit" class="btn-primary submit-btn" data-en="Send My Info — Let's Go →" data-fr="Envoyer mes infos — C'est parti →">Send My Info — Let's Go →</button>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <div class="success-icon">✓</div>
+      <h3 data-en="You're on the list!" data-fr="Vous êtes sur la liste !">You're on the list!</h3>
+      <p data-en="We've received your info and will reach out within 24 hours to set up your first session." data-fr="Nous avons reçu vos informations et vous contacterons dans les 24 heures pour organiser votre première séance.">We've received your info and will reach out within 24 hours to set up your first session.</p>
+    </div>
+  </section>
+
+  <!-- LAUNCH ANNOUNCEMENT -->
+  <section class="launch-section">
+    <div class="section-label" data-en="Coming Soon" data-fr="Bientôt disponible">Coming Soon</div>
+    <h2 class="section-title">
+      <span data-en="LAUNCHING IN " data-fr="LANCEMENT À ">LAUNCHING IN </span><span class="outline" data-en="MTL &amp; LAVAL" data-fr="MTL &amp; LAVAL">MTL &amp; LAVAL</span>
+    </h2>
+    <p class="launch-sub"
+       data-en="ApexMove is getting ready to bring the gym to your door. Sign up now to secure early access and be among the first to train with us."
+       data-fr="ApexMove se prépare à amener le gym à votre porte. Inscrivez-vous maintenant pour obtenir un accès anticipé et être parmi les premiers à s'entraîner avec nous.">
+      ApexMove is getting ready to bring the gym to your door. Sign up now to secure early access and be among the first to train with us.
+    </p>
+
+    <div class="launch-cards">
+      <div class="launch-card">
+        <div class="launch-icon">🚀</div>
+        <h3 data-en="Early Access" data-fr="Accès anticipé">Early Access</h3>
+        <p data-en="Be first in line when we launch. Early sign-ups get priority booking and exclusive introductory rates." data-fr="Soyez parmi les premiers lors de notre lancement. Les inscrits anticipés obtiennent une priorité de réservation et des tarifs d'introduction exclusifs.">Be first in line when we launch. Early sign-ups get priority booking and exclusive introductory rates.</p>
+      </div>
+      <div class="launch-card launch-card--highlight">
+        <div class="launch-icon">📍</div>
+        <h3 data-en="Montréal &amp; Laval" data-fr="Montréal &amp; Laval">Montréal &amp; Laval</h3>
+        <p data-en="Our launch territory covers the greater Montréal area and Laval. More cities coming soon." data-fr="Notre territoire de lancement couvre le grand Montréal et Laval. D'autres villes suivront bientôt.">Our launch territory covers the greater Montréal area and Laval. More cities coming soon.</p>
+      </div>
+      <div class="launch-card">
+        <div class="launch-icon">🏅</div>
+        <h3 data-en="We're Hiring Trainers" data-fr="Nous recrutons des entraîneurs">We're Hiring Trainers</h3>
+        <p data-en="Certified personal trainers and massage therapists — join our founding team and build your client base with us." data-fr="Entraîneurs personnels certifiés et massothérapeutes — rejoignez notre équipe fondatrice et développez votre clientèle avec nous.">Certified personal trainers and massage therapists — join our founding team and build your client base with us.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="book">
+    <h2 class="cta-title" data-en="BE PART OF<br>DAY ONE." data-fr="FAITES PARTIE<br>DU JOUR J.">BE PART OF<br>DAY ONE.</h2>
+    <p class="cta-sub"
+       data-en="Whether you're looking to train or looking to coach — we want to hear from you. Fill out the form above and we'll be in touch."
+       data-fr="Que vous cherchiez à vous entraîner ou à entraîner — nous voulons vous entendre. Remplissez le formulaire ci-dessus et nous vous contacterons.">
+      Whether you're looking to train or looking to coach — we want to hear from you. Fill out the form above and we'll be in touch.
+    </p>
+    <a href="#signup" class="btn-dark" data-en="Get Early Access" data-fr="Obtenir un accès anticipé">Get Early Access</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo"><span class="brand-apex">APEX</span>MOVE<span class="footer-tag">Entraînement Mobile &nbsp;|&nbsp; Mobile Fitness</span></div>
+    <ul class="footer-links">
+      <li><a href="#programs" data-en="Programs" data-fr="Programmes">Programs</a></li>
+      <li><a href="#how" data-en="How It Works" data-fr="Comment ça marche">How It Works</a></li>
+      <li><a href="#signup" data-en="Sign Up" data-fr="S'inscrire">Sign Up</a></li>
+      <li><a href="#" data-en="Contact" data-fr="Contact">Contact</a></li>
+      <li><a href="#" data-en="Privacy" data-fr="Confidentialité">Privacy</a></li>
+    </ul>
+    <div class="footer-copy" data-en="© 2026 ApexMove Inc. All rights reserved." data-fr="© 2026 ApexMove Inc. Tous droits réservés.">© 2026 ApexMove Inc. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const heroTitles = {
+      en: `<span class="outline">YOUR</span><br><span class="filled">GYM</span><br><span class="accent-word">COMES</span><br><span class="filled">TO YOU</span>`,
+      fr: `<span class="outline">VOTRE</span><br><span class="filled">GYM</span><br><span class="accent-word">VIENT</span><br><span class="filled">CHEZ VOUS</span>`
+    };
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+      document.getElementById('btnFR').classList.toggle('active', lang === 'fr');
+
+      // Swap hero title HTML
+      document.getElementById('heroTitle').innerHTML = heroTitles[lang];
+
+      // Swap all data-en / data-fr text content
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const val = el.getAttribute('data-' + lang);
+        if (val !== null && el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+          el.innerHTML = val;
+        }
+      });
+
+      // Swap placeholders on inputs/textareas
+      document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang) || '';
+      });
+    }
+
+    // Form submission with honeypot + reCAPTCHA validation
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      // 1. Honeypot check — bots fill hidden fields, humans don't
+      const honeypot = document.getElementById('_gotcha');
+      if (honeypot && honeypot.value !== '') {
+        // Silent fail — bot detected, do nothing
+        return;
+      }
+
+      // 2. reCAPTCHA check — requires a real site key to work
+      // Once you've replaced YOUR_SITE_KEY, this will enforce the CAPTCHA
+      const recaptchaResponse = typeof grecaptcha !== 'undefined'
+        ? grecaptcha.getResponse()
+        : null;
+
+      const siteKeyIsPlaceholder = document.querySelector('.g-recaptcha')
+        ?.getAttribute('data-sitekey') === 'YOUR_SITE_KEY';
+
+      if (!siteKeyIsPlaceholder && (!recaptchaResponse || recaptchaResponse.length === 0)) {
+        const lang = document.documentElement.lang || 'en';
+        alert(lang === 'fr'
+          ? 'Veuillez compléter le CAPTCHA avant de soumettre.'
+          : 'Please complete the CAPTCHA before submitting.');
+        return;
+      }
+
+      // 3. All checks passed — show success
+      document.querySelector('.signup-form').style.display = 'none';
+      document.getElementById('formSuccess').classList.add('visible');
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.step, .program-card, .launch-card, .signup-form').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
