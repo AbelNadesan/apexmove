@@ -9,12 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --black: #0a0a0a;
-      --white: #f5f2ec;
-      --cream: #ede8df;
-      --accent: #3a7ca5;
-      --accent2: #5fa8d3;
-      --steel: #2c2c2c;
+      --black: #111111;
+      --white: #ffffff;
+      --cream: #f5f5f5;
+      --accent: #E30000;
+      --accent2: #ff1a1a;
+      --steel: #333333;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -44,9 +44,24 @@
       background: linear-gradient(to bottom, rgba(10,10,10,0.85) 0%, transparent 100%);
       backdrop-filter: blur(4px);
     }
-    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.12em; color: var(--white); text-decoration: none; display: flex; flex-direction: column; line-height: 1; }
+    .logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-img {
+  height: 70px;
+  width: auto;
+  filter: brightness(1.1);
+  transition: transform 0.2s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.03);
+}
     .brand { white-space: nowrap; color: var(--white); }
-    .brand-apex { color: var(--accent); }
+    .brand-apex { color: #c0392b; }
     .logo-tag { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,242,236,0.45); margin-top: 0.25rem; white-space: nowrap; }
     .nav-right { display: flex; align-items: center; gap: 2rem; list-style: none; }
     .nav-right li a {
@@ -82,7 +97,7 @@
     .marquee-wrap { background: var(--accent); padding: 0.9rem 0; overflow: hidden; white-space: nowrap; }
     .marquee-track { display: inline-flex; animation: marquee 22s linear infinite; }
     .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.15em; color: var(--black); padding: 0 2.5rem; }
-    .marquee-sep { color: rgba(0,0,0,0.3); }
+    .marquee-sep { color: rgba(245,242,236,0.25); }
 
     /* ─── SHARED SECTION STYLES ─── */
     .section { padding: 7rem 4rem; }
@@ -94,8 +109,8 @@
     .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 5rem; border: 1px solid rgba(255,255,255,0.08); }
     .step { padding: 2.5rem 2rem; border-right: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; }
     .step:last-child { border-right: none; }
-    .step:hover { background: rgba(74,144,184,0.07); }
-    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: rgba(74,144,184,0.2); line-height: 1; margin-bottom: 1.5rem; }
+    .step:hover { background: rgba(227,0,0,0.1); }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: rgba(227,0,0,0.2); line-height: 1; margin-bottom: 1.5rem; }
     .step-icon { font-size: 2rem; margin-bottom: 1rem; }
     .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.7rem; }
     .step p { font-size: 0.9rem; color: rgba(245,242,236,0.55); line-height: 1.7; }
@@ -124,6 +139,44 @@
     .signup-form { max-width: 760px; margin: 0 auto; }
     .form-success { display: none; text-align: center; max-width: 480px; margin: 4rem auto 0; }
     .form-success.visible { display: block; }
+
+    /* ── Success overlay ── */
+    .success-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .success-overlay.show { opacity: 1; pointer-events: all; }
+    .success-card {
+      background: var(--black);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 3.5rem 3rem;
+      max-width: 480px; width: 90%;
+      text-align: center;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.4s ease;
+    }
+    .success-overlay.show .success-card { transform: translateY(0) scale(1); }
+    .success-checkmark {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.8rem;
+      font-size: 2rem; color: #fff;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 0.05em; margin-bottom: 0.8rem; color: var(--white); }
+    .success-card p { color: rgba(245,242,236,0.6); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; }
+    .success-close { background: var(--accent); color: #fff; border: none; padding: 0.8rem 2.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
     .success-icon { width: 64px; height: 64px; background: var(--accent); color: var(--black); border-radius: 50%; font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
     .form-success h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 0.05em; margin-bottom: 0.7rem; }
     .form-success p { color: rgba(245,242,236,0.6); font-size: 0.95rem; line-height: 1.7; }
@@ -133,30 +186,30 @@
     .form-field.full { margin-bottom: 1rem; }
     .form-field label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,242,236,0.5); font-weight: 500; }
     .form-field input, .form-field textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--white); padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; resize: none; width: 100%; }
-    .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(245,242,236,0.25); }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(0,0,0,0.3); }
     .form-field input:focus, .form-field textarea:focus { border-color: var(--accent); }
     .form-hint { font-size: 0.8rem; color: rgba(245,242,236,0.35); margin-bottom: 1rem; margin-top: -0.5rem; }
     .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
     .service-option { cursor: pointer; }
     .service-option input { display: none; }
     .service-box { border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; transition: border-color 0.2s, background 0.2s; text-align: center; }
-    .service-option input:checked + .service-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
-    .service-box:hover { border-color: rgba(74,144,184,0.4); }
+    .service-option input:checked + .service-box { border-color: var(--accent); background: rgba(227,0,0,0.1); }
+    .service-box:hover { border-color: rgba(227,0,0,0.4); }
     .svc-icon { font-size: 1.6rem; }
     .svc-name { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; }
     .radio-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
     .radio-option { cursor: pointer; }
     .radio-option input { display: none; }
     .radio-box { display: block; border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.8rem; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.06em; transition: border-color 0.2s, background 0.2s; }
-    .radio-option input:checked + .radio-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
-    .radio-box:hover { border-color: rgba(74,144,184,0.4); }
+    .radio-option input:checked + .radio-box { border-color: var(--accent); background: rgba(227,0,0,0.1); }
+    .radio-box:hover { border-color: rgba(227,0,0,0.4); }
     .submit-btn { width: 100%; margin-top: 2.5rem; padding: 1.1rem; font-size: 0.9rem; text-align: center; border: none; cursor: pointer; }
     .coaching-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
     .coaching-option { cursor: pointer; }
     .coaching-option input { display: none; }
     .coaching-box { border: 1px solid rgba(255,255,255,0.1); padding: 1.1rem 1.2rem; transition: border-color 0.2s, background 0.2s; }
-    .coaching-option input:checked + .coaching-box { border-color: var(--accent); background: rgba(74,144,184,0.1); }
-    .coaching-box:hover { border-color: rgba(74,144,184,0.4); }
+    .coaching-option input:checked + .coaching-box { border-color: var(--accent); background: rgba(227,0,0,0.1); }
+    .coaching-box:hover { border-color: rgba(227,0,0,0.4); }
     .coaching-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem; }
     .recaptcha-wrap { margin-top: 2rem; }
     .recaptcha-note { margin-top: 0.6rem; font-size: 0.72rem; color: var(--accent); opacity: 0.8; font-style: italic; }
@@ -173,7 +226,7 @@
     .launch-card--highlight { border-top: 3px solid var(--accent); }
     .launch-icon { font-size: 2rem; margin-bottom: 1.2rem; }
     .launch-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.06em; margin-bottom: 0.8rem; color: var(--white); }
-    .launch-card p { font-size: 0.9rem; color: rgba(245,242,236,0.55); line-height: 1.7; }
+    .launch-card p { font-size: 0.9rem; color: rgba(0,0,0,0.5); line-height: 1.7; }
 
     /* ─── CTA ─── */
     .cta-section { background: var(--accent); color: var(--black); padding: 8rem 4rem; text-align: center; position: relative; overflow: hidden; }
@@ -218,9 +271,8 @@
   <!-- NAV -->
   <nav>
     <a class="logo" href="#">
-      <span class="brand"><span class="brand-apex">APEX</span>MOVE</span>
-      <span class="logo-tag">Entraînement Mobile &nbsp;|&nbsp; Mobile Fitness</span>
-    </a>
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmcxIgogICB3aWR0aD0iMTIyMy41Mzk0IgogICBoZWlnaHQ9IjMxMS45MDM0NCIKICAgdmlld0JveD0iMCAwIDEyMjMuNTM5NCAzMTEuOTAzNDQiCiAgIHNvZGlwb2RpOmRvY25hbWU9IlZFUlRJQ0FMIExPR08ucG5nIgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjQuMyAoMGQxNWY3NSwgMjAyNS0xMi0yNSkiCiAgIGlua3NjYXBlOmRhdGFsb3NzPSJ0cnVlIgogICBpbmtzY2FwZTpleHBvcnQtZmlsZW5hbWU9IlZFUlRJQ0FMIExPR08uc3ZnIgogICBpbmtzY2FwZTpleHBvcnQteGRwaT0iOTYiCiAgIGlua3NjYXBlOmV4cG9ydC15ZHBpPSI5NiIKICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiCiAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzMSI+CiAgICA8ZmlsdGVyCiAgICAgICBpbmtzY2FwZTpjb2xsZWN0PSJhbHdheXMiCiAgICAgICBzdHlsZT0iY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzOnNSR0IiCiAgICAgICBpZD0iZmlsdGVyMiIKICAgICAgIHg9Ii0wLjAwMTAzMTQ4ODYiCiAgICAgICB5PSItMC4wNDYzODgwNzIiCiAgICAgICB3aWR0aD0iMS4wMDIwNjMiCiAgICAgICBoZWlnaHQ9IjEuMDkyNzc2MSI+CiAgICAgIDxmZUdhdXNzaWFuQmx1cgogICAgICAgICBpbmtzY2FwZTpjb2xsZWN0PSJhbHdheXMiCiAgICAgICAgIHN0ZERldmlhdGlvbj0iMC4yNDgxNzYxMiIKICAgICAgICAgaWQ9ImZlR2F1c3NpYW5CbHVyMiIgLz4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgaWQ9Im5hbWVkdmlldzEiCiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjMDAwMDAwIgogICAgIGJvcmRlcm9wYWNpdHk9IjAuMjUiCiAgICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlY2hlY2tlcmJvYXJkPSIwIgogICAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIKICAgICBpbmtzY2FwZTp6b29tPSIwLjU0OTAwOTg0IgogICAgIGlua3NjYXBlOmN4PSI4MTguNzQ2NzEiCiAgICAgaW5rc2NhcGU6Y3k9IjUyNC41ODA3NiIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE0NzAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iODkxIgogICAgIGlua3NjYXBlOndpbmRvdy14PSIxOCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMzciCiAgICAgaW5rc2NhcGU6d2luZG93LW1heGltaXplZD0iMCIKICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJnMSI+CiAgICA8aW5rc2NhcGU6cGFnZQogICAgICAgeD0iMCIKICAgICAgIHk9IjAiCiAgICAgICB3aWR0aD0iMTIyMy41Mzk0IgogICAgICAgaGVpZ2h0PSIzMTEuOTAzNDQiCiAgICAgICBpZD0icGFnZTIiCiAgICAgICBtYXJnaW49IjAiCiAgICAgICBibGVlZD0iMCIgLz4KICA8L3NvZGlwb2RpOm5hbWVkdmlldz4KICA8ZwogICAgIGlua3NjYXBlOmdyb3VwbW9kZT0ibGF5ZXIiCiAgICAgaW5rc2NhcGU6bGFiZWw9IkltYWdlIgogICAgIGlkPSJnMSIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTU3LjgwMDU3LC0zNjMuMjI3NzIpIj4KICAgIDxnCiAgICAgICBpZD0iZzU1IgogICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTcxLjE1NTg4LDQ2LjkwNzk5KSIKICAgICAgIHN0eWxlPSJmaWxsOiNlMzAwMDA7ZmlsbC1vcGFjaXR5OjAuODMxMzczIj4KICAgICAgPHBhdGgKICAgICAgICAgc3R5bGU9ImZpbGw6I2UzMDAwMDtmaWxsLW9wYWNpdHk6MC44MzEzNzMiCiAgICAgICAgIGQ9Im0gMTM3Mi40OTU5LDQ1NS4yNTM5NCB2IC0zNCBoIDM5IDM5IHYgNy4zNDU2OCA4LjE1MiBsIC0xMi44MTcyLDAuMjQ3MSBjIC01Ljg5MzEsMC4xMTM2MSAtMTkuNzcwMywwLjI0ODkzIC0yOC40MzI4LDAuMjUxMTYgbCAtMTUuNzUsMC4wMDQgdiA1LjUgNS41IGggMjcuNSAyNy41IHYgNyA3IGggLTI0LjM3NSBjIC0xMy40MDYyLDAgLTI1Ljc4MTIsMC4yODEyNSAtMjcuNSwwLjYyNSAtMy4wNzQ1LDAuNjE0ODkgLTMuMTI1LDAuNzIgLTMuMTI1LDYuNSB2IDUuODc1IGwgMTAuNzUsMC4wMDMgYyA1LjkxMjUsMC4wMDIgMTkuMTg3NSwwLjI5NzcgMjkuNSwwLjY1ODExIGwgMTguNzUsMC42NTUyOCB2IDYuMzQxNzIgNi4zNDE4OSBoIC00MCAtNDAgeiIKICAgICAgICAgaWQ9InBhdGg1NCIgLz4KICAgICAgPHBhdGgKICAgICAgICAgc3R5bGU9ImZpbGw6I2UzMDAwMDtmaWxsLW9wYWNpdHk6MC44MzEzNzMiCiAgICAgICAgIGQ9Im0gMTI4Mi40OTU5LDQ2MS4xMDAyNiBjIC05LjA3NSwtMTUuNDY0MzcgLTE4LjAwMzUsLTMwLjc1NjEzIC0xOS44NDEyLC0zMy45ODE2OCBsIC0zLjM0MTIsLTUuODY0NjQgMTIuODQxMiwwLjAyNDcgMTIuODQxMiwwLjAyNDcgNy4zNDM5LDEzLjIyNTMzIGMgMTIuMTUwNSwyMS44ODEzOCAyMC41ODg5LDM1LjcwNzExIDIxLjc5OTEsMzUuNzE2NDggMC42Mjg3LDAuMDA1IDEuNDM5MiwtMC43Nzg2NSAxLjgwMTMsLTEuNzQxMTUgMC4zNjIxLC0wLjk2MjUgNi4zMTU5LC0xMS45ODc1IDEzLjIzMDcsLTI0LjUgbCAxMi41NzI0LC0yMi43NTAwNiBoIDEyLjM3NjMgYyA2LjgwNywwIDEyLjM3NjMsMC4yMjA2MSAxMi4zNzYzLDAuNDkwMjQgMCwwLjI2OTYzIC00Ljg0OTEsOC43MDcxMyAtMTAuNzc1OCwxOC43NSAtNS45MjY4LDEwLjA0Mjg3IC0xNC44MTQzLDI1LjExNDQ1IC0xOS43NSwzMy40OTI0IGwgLTguOTc0MiwxNS4yMzI2MyAtMTQsLTkuNWUtNCAtMTQsLTkuNmUtNCB6IgogICAgICAgICBpZD0icGF0aDUzIiAvPgogICAgICA8cGF0aAogICAgICAgICBzdHlsZT0iZmlsbDojZTMwMDAwO2ZpbGwtb3BhY2l0eTowLjgzMTM3MyIKICAgICAgICAgZD0ibSAxMTY5LjcxOSw0ODcuMTM1MzUgYyAtNy44OTMxLC0zLjkwNzAzIC0xMS4yNDIzLC0xMy40MTg5OCAtMTEuMjAyMywtMzEuODE1MDcgMC4wNCwtMTguMzcxNjggMy40MDI2LC0yNi42MzQ3OCAxMi43MDIsLTMxLjIxMzk3IDQuNzE0MSwtMi4zMjEyOSA1LjE5OTksLTIuMzUyMzcgMzYuNzc3MiwtMi4zNTIzNyAxNy42LDAgMzMuNjM2NCwwLjM0ODMxIDM1LjYzNjUsMC43NzQwMiA1LjcwMTYsMS4yMTM1OCAxMi41MzExLDcuODY3NDIgMTQuMzQ1MiwxMy45NzYzOCAxLjc1MDEsNS44OTMwMiAxLjk3ODYsMjAuMTEzNTUgMC41MjYzLDMyLjc0NzAxIC0wLjc2ODcsNi42ODY5MiAtMS41NjYxLDkuMzI4MTcgLTMuNzQyNCwxMi4zOTY1NCAtNS40MTU3LDcuNjM1MzkgLTUuMjQxNyw3LjYwNjE1IC00NS4yNSw3LjYwNTI2IC0zNC4xNTU2LC03LjZlLTQgLTM1LjY3OTQsLTAuMDgxOCAtMzkuNzkyNSwtMi4xMTc4IHogbSA2NC4zMDI4LC0xNS4xNSBjIDIuNDQ1NywtMi4xMDM3NyAyLjY3MjMsLTIuOTkzNzkgMy4xMTc3LC0xMi4yNSAwLjI2NDIsLTUuNDg5NzggMC4xMTA3LC0xMi4wMDY0MSAtMC4zNDExLC0xNC40ODE0MSAtMC43MDQxLC0zLjg1NjU3IC0xLjM1MDksLTQuNzU5MzYgLTQuNTIzNCwtNi4zMTM4OSAtMy4xOTEzLC0xLjU2Mzc2IC02LjM4MjMsLTEuODEyNjkgLTIzLjE0MDQsLTEuODA1MjEgLTIyLjg1MjQsMC4wMTAyIC0yNi4xMDkzLDAuNzgwMzUgLTI3LjE2ODEsNi40MjQyNSAtMC4zNTY3LDEuOTAxMzMgLTAuNDk2LDguNzI2MTkgLTAuMzA5NiwxNS4xNjYzNCAwLjQ3NTIsMTYuNDEzNDkgLTEuMDg2LDE1LjUyODUxIDI3LjM5NCwxNS41Mjg1MSAyMS43NzMyLDAgMjIuMzk5NiwtMC4wNTY5IDI0Ljk3MDksLTIuMjY4NTkgeiIKICAgICAgICAgaWQ9InBhdGg1MiIgLz4KICAgICAgPHBhdGgKICAgICAgICAgc3R5bGU9ImZpbGw6I2UzMDAwMDtmaWxsLW9wYWNpdHk6MC44MzEzNzMiCiAgICAgICAgIGQ9Im0gMTAzNC40OTU5LDQ1NS4yNTM5NCB2IC0zNCBsIDE0Ljc1LDAuMDQ5MyAxNC43NSwwLjA0OTMgMTIsMTkuMDAzNzUgYyA2LjYsMTAuNDUyMDYgMTIuNjI3OSwxOS41MzkyOCAxMy4zOTU0LDIwLjE5MzgyIDEuMTA2MywwLjk0MzUzIDEuNjI0MiwwLjgwNDgzIDIuNSwtMC42Njk0OSAwLjYwNzUsLTEuMDIyNzUgNi41MDQ2LC0xMC4wMTk2NCAxMy4xMDQ2LC0xOS45OTMwOSBsIDEyLC0xOC4xMzM1NCAxNC43NSwtMC4yNzY3MyAxNC43NSwtMC4yNzY3NCB2IDM0LjAyNjY5IDM0LjAyNjczIGggLTkuODY5MiAtOS44NjkxIGwgLTAuNjE5OSwtMy43NSBjIC0wLjM0MDksLTIuMDYyNSAtMC42MjQ3LC0xMi42NjQwNiAtMC42MzA4LC0yMy41NTkwMiAtMC4wMSwtMTAuODk0OTYgLTAuMzg3MiwtMTkuNTc2NTIgLTAuODQ3LC0xOS4yOTIzNSAtMC40NTk4LDAuMjg0MTYgLTcuNTI1NSwxMC44ODU3MiAtMTUuNzAxNiwyMy41NTkwMiBsIC0xNC44NjU3LDIzLjA0MjM1IGggLTQuMjA3IC00LjIwNjkgbCAtMTQuNzE1OCwtMjMuMDE3ODQgYyAtOC4wOTM2LC0xMi42NTk4MiAtMTUuMTA5OCwtMjMuMjYxMzggLTE1LjU5MTQsLTIzLjU1OTAyIC0wLjQ5MTMsLTAuMzAzNjkgLTAuODc1Niw5Ljc5NzE0IC0wLjg3NTYsMjMuMDE3ODQgdiAyMy41NTkwMiBoIC0xMCAtMTAgeiIKICAgICAgICAgaWQ9InBhdGg1MSIgLz4KICAgICAgPHBhdGgKICAgICAgICAgc3R5bGU9ImZpbGw6I2UzMDAwMDtmaWxsLW9wYWNpdHk6MC44MzEzNzMiCiAgICAgICAgIGQ9Im0gOTQyLjUxNDA1LDQ3Mi4yNzE0NiAxNy40ODE4OCwtMTYuOTgyNDcgLTE3LjMwMDA2LC0xNy4wMTc1MyAtMTcuMzAwMDcsLTE3LjAxNzUyIGggMTQuMjgzNzQgMTQuMjgzNzMgbCAxMC41MzM0MywxMC41MDA3NyAxMC41MzM0MywxMC41MDA3NyAxMC40NjUwMywtMTAuNTAwNzcgMTAuNDY1MDgsLTEwLjUwMDc3IDE0LjUxNzc2LDAuMDIzNSAxNC41MTc5LDAuMDIzNSAtMTcuMTA2MywxNi45MjE1IC0xNy4xMDYzNiwxNi45MjE1IDE3LjYwNjM2LDE3LjAwMTk4IDE3LjYwNjMsMTcuMDAxOTcgLTE0LjQ4MzcsMC4wNTMxIC0xNC40ODM1NiwwLjA1MjkgLTEwLjgyNDksLTEwLjc1IC0xMC44MjQ4NiwtMTAuNzUgLTEwLjQ0NDI0LDEwLjc1IC0xMC40NDQyNCwxMC43NSBoIC0xNC43MjkxMSAtMTQuNzI5MTIgeiIKICAgICAgICAgaWQ9InBhdGg1MCIgLz4KICAgICAgPHBhdGgKICAgICAgICAgc3R5bGU9ImZpbGw6I2UzMDAwMDtmaWxsLW9wYWNpdHk6MC44MzEzNzMiCiAgICAgICAgIGQ9Im0gODM5LjE1NTg4LDQ2NS4wOTIwMSBjIC0wLjM2Mjk3LC0xMy4yODkwNiAtMC42NTk5NSwtMjguNTg5MDYgLTAuNjU5OTUsLTM0IHYgLTkuODM4MDcgaCAzOS41IDM5LjUgdiA3LjM0NDk3IDguMjMxNjQgbCAtMTMuNjU4MTEsMC4zMDAzNiBjIC03LjUxODc4LDAuMTY1MzUgLTIwLjMzNjk2LDAuMTIzMDMgLTI4LjUsMC4xMjMwMyBoIC0xNC44NDE4OSB2IDUuNSA1LjUgaCAyNy41IDI3LjUgdiA3IDcgbCAtMTMuMjUsMC4wMDQgYyAtNy4yODc1LDAuMDAyIC0xOS42NjI1LDAuMjk3MDEgLTI3LjUsMC42NTU1NSBsIC0xNC4yNSwwLjY1MTU1IHYgNS44NDQ0NSA1Ljg0NDQ1IGwgMTAuMjUsMC4wMDMgYyA1LjYzNzUsMC4wMDIgMTguNTEwMTcsMC40NzUwMyAyOSwwLjMwMzQ0IGwgMTguNzUsLTAuNTg2MjIgdiA3LjkzNzg5IDYuMzQxODkgaCAtMzkuMzQwMDUgLTM5LjM0MDA2IHoiCiAgICAgICAgIGlkPSJwYXRoNDkiIC8+CiAgICAgIDxwYXRoCiAgICAgICAgIHN0eWxlPSJmaWxsOiNlMzAwMDA7ZmlsbC1vcGFjaXR5OjAuODMxMzczIgogICAgICAgICBkPSJNIDczOS40OTU5Myw0NTUuODcwNTcgViA0MjIuNDg3MiBsIDIuMjUsLTAuNjAyOTcgYyAzLjc5OTM4LC0xLjAxODIgNjQuMTM5NDcsLTAuNjk0MzEgNjkuNzc1NDUsMC4zNzQ1NCA1LjYzMzM3LDEuMDY4MzQgMTAuOTA3OTIsNC40MzQ2NyAxMy43NDUxMiw4Ljc3MjQzIDEuNDAyNzIsMi4xNDQ1OSAxLjcyMzE0LDQuOTE4NDcgMS42OTYxNCwxNC42ODM0MSAtMC4wNjUxLDIzLjUzMTU2IC0zLjQ1MjMxLDI1LjQ0MjMxIC00NS4yMTY3MSwyNS41MDY2MSBsIC0yMS4yNSwwLjAzMjcgdiA5IDkgaCAtMTAuNSAtMTAuNSB6IG0gNjMuNDkwODMsLTEuNjA2NSBjIDEuMDEwNywtMS4xMTY4MSAyLjAwODg4LC00LjE1NTMzIDIuMjc1MDUsLTYuOTI1MzkgMC40MDc0OSwtNC4yNDA4NCAwLjEzNDI3LC01LjI3NTUgLTEuOTQxMTIsLTcuMzUwODkgLTIuMzI5NzUsLTIuMzI5NzUgLTMuMTAwMDQsLTIuNDQwNTcgLTIxLjczNDQ4LC0zLjEyNjg0IC0xMC42MjU1MiwtMC4zOTEzMiAtMTkuNjAzNDMsLTAuNDI3MiAtMTkuOTUwOSwtMC4wNzk3IC0wLjg0NjE2LDAuODQ2MTYgLTEuNTA0NDIsMTYuMDc5MDUgLTAuNzc2NzcsMTcuOTc1MjggMC40ODM2NywxLjI2MDQxIDMuNzIwNzcsMS40OTc0MyAyMC40NTEwMiwxLjQ5NzQzIDE4LjU3MjY3LDAgMTkuOTk0NTEsLTAuMTMwNTIgMjEuNjc3MiwtMS45ODk4NyB6IgogICAgICAgICBpZD0icGF0aDQ4IiAvPgogICAgICA8cGF0aAogICAgICAgICBzdHlsZT0iZmlsbDojZTMwMDAwO2ZpbGwtb3BhY2l0eTowLjgzMTM3MyIKICAgICAgICAgZD0ibSA2MjEuNDk1OTMsNDg4LjcxNzE3IGMgMCwtMC41MTgwOSA5LjE5NzM3LC0xNS41MjYyNiAzMS4wODExNywtNTAuNzE3OSBsIDEwLjQxODgzLC0xNi43NTQ2OCAxNC40MDk3MSwwLjI1NDY4IDE0LjQwOTcxLDAuMjU0NjcgMjAuMzIxMzgsMzMgYyAxMS4xNzY3NSwxOC4xNSAyMC4zMjk4OCwzMy4zMzc1IDIwLjM0MDI4LDMzLjc1IDAuMDEwNCwwLjQxMjUgLTUuNDkzNTgsMC43NDY4NiAtMTIuMjMxMDgsMC43NDMwMiBsIC0xMi4yNSwtMC4wMDcgLTMuNTMyMTksLTYuMjQzMDIgLTMuNTMyMTksLTYuMjQzMDIgLTkuNDY3ODEsLTAuMjU0NTMgYyAtNS4yMDczLC0wLjEzOTk5IC0xNS45NzE5NywwLjA4NSAtMjMuOTIxNDksMC41IGwgLTE0LjQ1MzY4LDAuNzU0NTMgLTMuNDA4NDksNS43NSAtMy40MDg0OCw1Ljc1IGggLTEyLjM4NzgzIGMgLTYuODEzMzEsMmUtNSAtMTIuMzg3ODQsLTAuMjQxNTMgLTEyLjM4Nzg0LC0wLjUzNjc1IHogbSA3MCwtMjcuMTU1MDYgYyAwLC0yLjM3MTgyIC0xMy44MTY5NSwtMjMuNTM5MzMgLTE0LjkyMDExLC0yMi44NTc1NCAtMC45Mjc0LDAuNTczMTYgLTE0LjA3OTg5LDIxLjk4MiAtMTQuMDc5ODksMjIuOTE4NCAwLDAuMzQ3MDMgNi41MjUsMC42MzA5NyAxNC41LDAuNjMwOTcgNy45NzUsMCAxNC41LC0wLjMxMTMyIDE0LjUsLTAuNjkxODMgeiIKICAgICAgICAgaWQ9InBhdGg0NyIgLz4KICAgIDwvZz4KICAgIDxnCiAgICAgICBpZD0iZzU0IgogICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTk4LjEyNDU1LDgxLjc3MzQwNSkiCiAgICAgICBzdHlsZT0iZmlsbDojZTMwMDAwO2ZpbGwtb3BhY2l0eTowLjgzMTM3MyI+CiAgICAgIDxwYXRoCiAgICAgICAgIHN0eWxlPSJmaWxsOiNlMzAwMDA7ZmlsbC1vcGFjaXR5OjAuODMxMzczIgogICAgICAgICBkPSJtIDQ5NC44MTI1MSw1MzkuMDc3MjcgYyAxLjI5NTkxLC0yLjkyNzgzIDcuNDM2MTMsLTE2LjIxMzQ5IDEzLjY0NDkxLC0yOS41MjM2OSBsIDExLjI4ODcxLC0yNC4yMDAzNiA5LjEyNDksLTUuOTY1NjIgYyAxMC42NDI3NiwtNi45NTc5NyAyMS40MzI0OCwtMTIuOTQ3MjggMzQuMzc0OSwtMTkuMDgxMyA1LjA4NzUsLTIuNDExMjEgOS4yNSwtNC45NjMyMiA5LjI1LC01LjY3MTE0IDAsLTAuNzA3OTEgLTAuNDQxMjcsLTIuMzIwNzkgLTAuOTgwNTksLTMuNTg0MTcgLTQuODg1MjQsLTExLjQ0MzcyIC0yMy4wMTk0MSwtNTkuMjkxNTcgLTIzLjAxOTQxLC02MC43Mzc3OCAwLC0xLjAyMzkzIDEuOTYxOTksLTYuOTY4NjYgNC4zNTk5NywtMTMuMjEwNDkgOC43NjM1NiwtMjIuODExMDcgMTIuMzA1OTIsLTM1Ljg3NDQ5IDEwLjgxODM3LC0zOS44OTU3MSAtMC43MjMwNiwtMS45NTQ2MSAtMS44MzY2MywtMS41Mzc1OSAtMjAuMDQ1ODQsNy41MDY5MiBsIC0xOS4yODAyNiw5LjU3NjUxIC0yMy4wMzY2LC0wLjI2ODI1IC0yMy4wMzY2LC0wLjI2ODI1IDYyLjg2MDQ4LC0zMy42NTUxNSBjIDY2LjMxODk1LC0zNS41MDY3OSA3My4zNjA0OCwtMzkuMTg5MTggNzMuMzYwNDgsLTM4LjM2NDEgMCwwLjI4Mjk0IC05LjIyMzIzLDI1LjEwNzkxIC0yMC40OTYwNyw1NS4xNjY1OSBsIC0yMC40OTYwNiw1NC42NTIxNSAxMy4zOTc3NiwzNi42MDAyNiBjIDE0LjQxNzUxLDM5LjM4NTk5IDE2LjIzMjE4LDQ0Ljc5NTc3IDE1LjMyOTMyLDQ1LjY5ODY0IC0wLjMyMjAzLDAuMzIyMDIgLTQuNDI2NDksMS40NDEzNSAtOS4xMjEwNCwyLjQ4NzM5IC0yNi40NTI3NSw1Ljg5NDI1IC00OS4xNDYxMywyMC4yMTM1IC04NS4zODM3Myw1My44NzYxMSBsIC0xNS4yNjk4MiwxNC4xODQ3NyB6IgogICAgICAgICBpZD0icGF0aDQ2IiAvPgogICAgICA8cGF0aAogICAgICAgICBzdHlsZT0iZmlsbDojZTMwMDAwO2ZpbGwtb3BhY2l0eTowLjgzMTM3MyIKICAgICAgICAgZD0ibSAzNzIuOTM1NjQsNTQwLjEyMDk5IGMgLTcuNzcxNTQsLTguMDAzMDQgLTI3LjIwNTA0LC0yNS42MzczIC0zNS40Mzk3MSwtMzIuMTU4NTMgLTIxLjUyNzY2LC0xNy4wNDgyNyAtNDIuMDg1NDQsLTI3LjU1NjQ1IC02MS4yNSwtMzEuMzA4MTQgLTUuOTg3MjUsLTEuMTcyMDggLTguNzUsLTIuMTUyMjggLTguNzUsLTMuMTA0NDMgMCwtMS4yODQxIDMuNDcxNTMsLTEwLjk2NTA1IDIxLjQwOTMsLTU5LjcwMzQgMy42MjQ4OSwtOS44NDkwOSA2LjU5MDcsLTE5LjM3NzUgNi41OTA3LC0yMS4xNzQyNCAwLC0zLjMwNDU2IC0xMC4yMjQ5MiwtMzIuMDcxMTMgLTI5LjQ2ODYyLC04Mi45MDYzNyAtNS43OTYwNCwtMTUuMzExMTIgLTEwLjMzNzc2LC0yOC4wMzg4OSAtMTAuMDkyNzMsLTI4LjI4MzkzIDAuNDUxNzksLTAuNDUxNzkgOS4yMjc2Myw0LjE4NDc4IDkwLjU2MTM1LDQ3Ljg0NjU2IGwgNDUuNSwyNC40MjU0MyAtMjIuNTk4MzgsMC4yNjgzOSAtMjIuNTk4MzcsMC4yNjgzOCAtMjAuNzY1MTQsLTEwLjAxODM4IGMgLTExLjQyMDgzLC01LjUxMDEyIC0yMS4wMDAyMiwtMTAuMDE4MzkgLTIxLjI4NzU1LC0xMC4wMTgzOSAtMi4wNTU2OSwwIDIuNjY1MDUsMTYuMTEzNzkgMTIuMTgyNTcsNDEuNTg0IGwgNS42MzY0NywxNS4wODQgLTEyLjU2MDA0LDMyLjMwNzQyIGMgLTYuOTA4MDMsMTcuNzY5MDggLTEyLjQzNjE1LDMyLjQzMTMzIC0xMi4yODQ3MSwzMi41ODI3NyAwLjE1MTQ0LDAuMTUxNDQgNC41NTAzLDIuMjYyMTggOS43NzUyNSw0LjY5MDUzIDExLjQxODQ4LDUuMzA2ODcgMjMuNTM1LDEyLjA5NzQyIDM0Ljg5NTQsMTkuNTU2NjkgbCA4LjM5NTUsNS41MTI1MSA3LjQ2ODU2LDE1LjU5MTA0IGMgMTEuMjc5NTgsMjMuNTQ2NzYgMjAuMzE1NDcsNDMuMzQ5MzQgMTkuOTQ3OTUsNDMuNzE2ODcgLTAuMTgwNDUsMC4xODA0NCAtMi41NTA5NiwtMS45NjEwMSAtNS4yNjc4LC00Ljc1ODc4IHoiCiAgICAgICAgIGlkPSJwYXRoNDUiIC8+CiAgICAgIDxwYXRoCiAgICAgICAgIHN0eWxlPSJmaWxsOiNlMzAwMDA7ZmlsbC1vcGFjaXR5OjAuODMxMzczIgogICAgICAgICBkPSJtIDQzMi4zMTk1Myw1OTAuMDU1ODYgYyAtMS40NzIwMiwtMS44MTYwNiAtOC4zODAyLC05LjM3NjkyIC0xNS4zNTE1MSwtMTYuODAxOTIgLTYuOTcxMzEsLTcuNDI1IC0xMy4yNjA3NiwtMTQuODUgLTEzLjk3NjU1LC0xNi41IC0wLjcxNTc5LC0xLjY1IC00LjMwMDk4LC0xNi4yNzUgLTcuOTY3MDgsLTMyLjUgLTMuNjY2MSwtMTYuMjI1IC04LjAxNjI5LC0zNS4yMTM0NCAtOS42NjcwOSwtNDIuMTk2NTMgbCAtMy4wMDE0NSwtMTIuNjk2NTMgLTE1LjM3NjQxLC0xMC42MDIzNyBjIC0xNy40MjkyLC0xMi4wMTc4MiAtMTQuODc5OTgsLTguMzkyNzEgLTI0LjA4ODIxLC0zNC4yNTQ1NyAtMi44MjAxOCwtNy45MjA2NSAtMy45MjU4NCwtMTIuMjMxNDggLTMuMTI4NDgsLTEyLjE5NzU5IDAuNjc4MjUsMC4wMjg4IDE1LjQwODE0LDguMDUyODggMzIuNzMzMDksMTcuODMxMjIgbCAzMS40OTk5MSwxNy43Nzg4IDIuMjIzMTgsOS45MTg3OCBjIDEuMjIyNzUsNS40NTUzNCA1Ljg0MzU5LDI2LjExODc5IDEwLjI2ODU1LDQ1LjkxODc5IDQuNDI0OTUsMTkuOCA4LjcxOTA2LDM4LjAxMzE5IDkuNTQyNDUsNDAuNDczNzUgMS42NzA2Nyw0Ljk5MjQ5IDcuOTk0NzMsMTIuMTQ0MzIgMTAuMDQzNSwxMS4zNTgxNCAwLjcyOTc2LC0wLjI4MDA0IDIuOTI3NiwtMi40NjI2OCA0Ljg4NDEsLTQuODUwMzMgMy40NzAzMiwtNC4yMzUwNyAzLjgyODM4LC01LjU0NjU5IDE0LjY0OTk5LC01My42NjEzNyA2LjEwMSwtMjcuMTI2MSAxMS4xNTkyNSwtNDkuMzYxNjIgMTEuMjQwNTcsLTQ5LjQxMjI1IDMuMjcxODIsLTIuMDM3MzggNjEuNjU1MjEsLTM0LjQwNzk0IDYyLjA1OCwtMzQuNDA3OTQgMS41MzgzNywwIDAuMTkzNDUsNi4yOTAyMiAtNC4wMjEwNSwxOC44MDY1IC0yLjUzNTk5LDcuNTMxNDMgLTQuOTgxMzYsMTQuMzk2MDYgLTUuNDM0MTYsMTUuMjU0NzQgLTAuNDUyOCwwLjg1ODY4IC03Ljc2NjkyLDYuMTcwOTcgLTE2LjI1MzYsMTEuODA1MDkgbCAtMTUuNDMwMzIsMTAuMjQzODQgLTYuMDY3MiwyNy42OTQ5MiBjIC0zLjMzNjk1LDE1LjIzMjIgLTcuNTYwNDMsMzQuODc2MzUgLTkuMzg1NTEsNDMuNjUzNjcgbCAtMy4zMTgzMiwxNS45NTg3NiAtMTIuNSwxMy40OTM1NiBjIC02Ljg3NSw3LjQyMTQ1IC0xNC41MjUsMTUuNjc1ODcgLTE3LDE4LjM0MzE1IGwgLTQuNSw0Ljg0OTYgeiIKICAgICAgICAgaWQ9InBhdGg0NCIgLz4KICAgIDwvZz4KICAgIDx0ZXh0CiAgICAgICB4bWw6c3BhY2U9InByZXNlcnZlIgogICAgICAgc3R5bGU9ImZvbnQtc3R5bGU6bm9ybWFsO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc3RyZXRjaDpub3JtYWw7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QUtPTlk7LWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjonQUtPTlksIE5vcm1hbCc7Zm9udC12YXJpYW50LWxpZ2F0dXJlczpub3JtYWw7Zm9udC12YXJpYW50LWNhcHM6bm9ybWFsO2ZvbnQtdmFyaWFudC1udW1lcmljOm5vcm1hbDtmb250LXZhcmlhbnQtZWFzdC1hc2lhbjpub3JtYWw7d3JpdGluZy1tb2RlOmxyLXRiO2RpcmVjdGlvbjpsdHI7d2hpdGUtc3BhY2U6cHJlO2lubGluZS1zaXplOjYxNy4wOTU7b3BhY2l0eToxO21peC1ibGVuZC1tb2RlOm5vcm1hbDtmaWxsOiNlMzAwMDA7ZmlsbC1vcGFjaXR5OjAuODMxMzczO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjAwMDE1O3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtmaWx0ZXI6dXJsKCNmaWx0ZXIyKSIKICAgICAgIHg9IjEyMjMuOTM5OSIKICAgICAgIHk9IjcwMS4xNTE1NSIKICAgICAgIGlkPSJ0ZXh0MiIKICAgICAgIHRyYW5zZm9ybT0ibWF0cml4KDEuMDQzODY3NywwLDAsMS42NjExODQ0LC02MTYuMTc3MzYsLTU3Ny4yODc0NCkiPjx0c3BhbgogICAgICAgICB4PSIxMjIzLjkzOTkiCiAgICAgICAgIHk9IjcwMS4xNTE1NSIKICAgICAgICAgaWQ9InRzcGFuMyI+PHRzcGFuCiAgICAgICAgICAgc3R5bGU9InN0cm9rZTpub25lIgogICAgICAgICAgIGlkPSJ0c3BhbjEiPkVuVFJBw45ORU1FTlQgw4AgRE9NSUNJTEUgfCBJbi1ob21lIHRyYWluaW5nICA8L3RzcGFuPjwvdHNwYW4+PC90ZXh0PgogIDwvZz4KPC9zdmc+Cg==" alt="APEXMOVE logo" class="logo-img">
+</a>
     <ul class="nav-right">
       <li class="nav-links"><a href="#how" data-en="How It Works" data-fr="Comment ça marche">How It Works</a></li>
       <li class="nav-links"><a href="#programs" data-en="Programs" data-fr="Programmes">Programs</a></li>
@@ -416,28 +468,28 @@
       <div class="form-row">
         <div class="form-field">
           <label data-en="First Name" data-fr="Prénom">First Name</label>
-          <input type="text" id="fname" placeholder="Jane" required />
+          <input type="text" id="fname" name="First Name" placeholder="Jane" required />
         </div>
         <div class="form-field">
           <label data-en="Last Name" data-fr="Nom de famille">Last Name</label>
-          <input type="text" id="lname" placeholder="Doe" required />
+          <input type="text" id="lname" name="Last Name" placeholder="Doe" required />
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
           <label data-en="Email Address" data-fr="Adresse courriel">Email Address</label>
-          <input type="email" id="email" placeholder="jane@example.com" required />
+          <input type="email" id="email" name="Email" placeholder="jane@example.com" required />
         </div>
         <div class="form-field">
           <label data-en="Phone Number" data-fr="Numéro de téléphone">Phone Number</label>
-          <input type="tel" id="phone" placeholder="+1 (514) 000-0000" />
+          <input type="tel" id="phone" name="Phone" placeholder="+1 (514) 000-0000" />
         </div>
       </div>
       <div class="form-field full">
         <label>
           <span data-en="Your Borough or Area" data-fr="Votre arrondissement ou secteur">Your Borough or Area</span><span style="color:var(--accent)" data-en=" — Montréal &amp; Laval only" data-fr=" — Montréal &amp; Laval seulement"> — Montréal &amp; Laval only</span>
         </label>
-        <input type="text" id="address"
+        <input type="text" id="address" name="Borough"
           data-placeholder-en="e.g. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…"
           data-placeholder-fr="ex. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…"
           placeholder="e.g. Plateau-Mont-Royal, Laval-des-Rapides, Ahuntsic…" required />
@@ -545,7 +597,8 @@
       <!-- Biggest Challenge -->
       <div class="form-group-title" style="margin-top:2.5rem;" data-en="Your Biggest Challenge" data-fr="Votre plus grand défi">Your Biggest Challenge</div>
       <div class="form-field full">
-        <textarea id="challenge" rows="3"
+        <textarea id="challenge" name="Biggest Challenge" rows="3"
+          style="color: rgba(245,242,236,0.45);"
           data-placeholder-en="e.g. lack of time, lack of motivation, gym too crowded, don't know what to do… (optional)"
           data-placeholder-fr="ex. manque de temps, manque de motivation, gym trop bondé, je ne sais pas quoi faire… (facultatif)"
           placeholder="e.g. lack of time, lack of motivation, gym too crowded, don't know what to do… (optional)"></textarea>
@@ -612,7 +665,7 @@
 
   <!-- CTA -->
   <section class="cta-section" id="book">
-    <h2 class="cta-title" data-en="BE PART OF<br>DAY ONE." data-fr="FAITES PARTIE<br>DU JOUR J.">BE PART OF<br>DAY ONE.</h2>
+    <h2 class="cta-title" data-en="BE PART OF<br>DAY ONE." data-fr="FAITES PARTIE<br>DE L'AVENTURE.">BE PART OF<br>DAY ONE.</h2>
     <p class="cta-sub"
        data-en="Whether you're looking to train or looking to coach — we want to hear from you. Fill out the form above and we'll be in touch."
        data-fr="Que vous cherchiez à vous entraîner ou à entraîner — nous voulons vous entendre. Remplissez le formulaire ci-dessus et nous vous contacterons.">
@@ -623,7 +676,9 @@
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo"><span class="brand-apex">APEX</span>MOVE<span class="footer-tag">Entraînement Mobile &nbsp;|&nbsp; Mobile Fitness</span></div>
+    <div class="footer-logo">
+  <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABxAIcDASIAAhEBAxEB/8QAHQABAAEFAQEBAAAAAAAAAAAAAAYEBQcICQIBA//EAEYQAAECBQIDBAUIBggHAAAAAAECAwAEBQYRByESMUEIE1FhFCIycYEJI0JSYpGh0RUWM4KxwRckQ1ZylNLTGCU1RVWSk//EABsBAQACAwEBAAAAAAAAAAAAAAAEBQIGBwMB/8QAMxEAAgECAwQIBQQDAAAAAAAAAAECAwQFETEGIUFREiIyYXGBobEHEzORwRRC0fBSYnL/2gAMAwEAAhEDEQA/ANMoQhACEIQAhCEAIQhACJPpfZFc1EvWRtW32OOamlZW4oHu5dse26sjkkD7yQBuQIjspLzE5Nsykow7MTD60ttNNIKluLUcBKQNySSAAI6Udk7RhnSmzVTNTQ27c9VSldQcGCGEjdLCT4DOVEc1eICYAwb2s+z7R7K0foNatOXUtVBHo1VeKfnJpDis9+vHUOHGOQSvHJMaiR2FuqiyNx23UaDU2g7JVCWXLPJI5pWkg/HfMclL7tufs+8atbFUTibps0uXWcYC8HZQ8lDCh5GALLCEIAQhCAEIQgBCEIAQhCAEIQgBCEZ07Ieiy9UbvVVay0tNrUhxKps42m3eaZcH3YKj0TgbFQMAZh7CGiolpdvVK55MF55P/I2HE+wg5BmCD1PJPlk9RjcKPDDTTDKGWW0NtNpCUIQMJSAMAAdBHuAEaQ/KJ2AZOt0jUSRYwzPD0CoKTyDyQS0o/wCJAUP3B4xu9ER1jsiT1F02rNoTiw16cx8w8QT3L6SFNL23ICwnI6jI6wByWhFVVpCcpVUm6XUZdctOyb65eYZX7TbiFFKknzBBEUsAIQhACEIQAhCEAIQhACEIqqTT56rVSVpdNlXZqdm3UssMtjKnFqOAkDzMASPSOwa1qVfMlatDSlLr+VvvrGUSzII43VeQyNupIHWOpGnNn0Ww7Op9rUBjupKSb4QT7TqzupxR6qUck/lEG7MWj8lpPY6GH0MvXDUEpdqkynf1sbNJP1E5PvOT1jLcAIh19aj2xZtx21b9YmwifuKdEpKNgj1Mg4cXnknj4Ee9Y6A4uWoF2Uex7QqFz12YDEjItca9/WWrklCR1Uo4AHiY5c6s6h13UTUKbvCpvKZmFrAlG21ECVaSSW0JPPbOc9SSesAdZI+xBtB73b1D0poV0hQ9JmJcNziRtwzCPUcGPDiBI8iInMAc+e39YSrc1XauyUZ4afcjPeLIGyZpsBLg8uJPdq8yV+Ea3R097WdhK1B0Wq1PlGC9VKeBUKeEpypTjYOUAeKkFaR5keEcwoAQhCAEIQgBCEIAQhCAEbxdhHRZNKprOqVySyTPzrR/QrC07sMKGC/vyUsZCfBBJ+ltiTscaG/0jV83Rcsqr9VaY6AG1jaffG/d+aE7FXjkJ6nHQ5tCG20ttpShCQAlKRgADoIA9R8UQlJUogAbkmPsat9uvWR21qENPLdmi3V6sxx1B9tWFS0qduAHopzBHknP1gYAwj2z9aFag3cbXoE3xWvR3SAtHKcmBkKcz1QPZT8TvkY16hF6pNr1qpAKZlFNtn+0e9QfmfgIwnUjBZyeRKtLK4vJ/Lt4Ob5JZmcOyh2gKZpLbNw0e4ZSo1CWfdbmqaxKhOzpBS4FFSgEpIDZ2B5HY5i+3p21L0n1Fu1bapNEZIILk0tU29nooH1ED3FKvfGG5DT1hACp6dW4eqWxwj7zEgkLfo9PwZeRa4x9NY4lfeYg1MTox7O83Sx+HWKV8nXcaa73m/st3qi11/VrWq8z/XLtuF1pRzwSajLNY8MNBKSN+sRKVsyvPe1LtsDxddH8smJ5WbhpVKBRMTHG6B+xb9ZX5D4xEqnfk66Sinyzcunopfrq/IfjHnC6uq304JLmyZd7PbN4T1b26lOa/bDLPz1y82jy3YVS3L07JoT9kqV/IRSzlt0+UJExcUolQ5pCOI/cDmLPP1WpT5Jm5150H6JVhP3DaKKJMaVw+3U+yX5NcusRwSPVtbNvvnOXtFr3K6bl6c1gM1FyY80y5SPxMIoYRJUWlr7fwUFStCcs1TS7l0vzJv1EIQjMjiJ5oXpnVtVL9lrcpxUzLJHfT83w5TLMAjKvNRzgDqT4ZiJW9R6pcFbk6JRZJ2eqM66GZdhoZUtZ5DwA8SdgMk7R067OWk1N0ksRultluYq83h6qTgH7V3HspP1E7gD3nmTAE3su26TaNrU+26HLCWp1PZDLKM5OBzUT1UTkk9STHm8rpt6z6I9W7mq8rS5Br2nX14yeiUjmpR6AAkxg7X7tTWzYbz9CtVpm46+jKXFJc/qsqrlhahutX2U+G5Eab3LV791crxrt1VZ6YSCQ0p0cLTKSc8LLYwAOXLnjckxhOpGmulJ5IlWVjcX1VUbeDlJ8F/dy72Z11m7Y1TqCnqRphT1U9gko/Ss42FPr5jLTW6UdCCrJ39lJjXpVDua7qs/XblqMy5NTawt6Zm1lx93YAZyc7AADPIADGBEsols0ykgKYa7x4Dd5zdXw8PhF4SnEVFfE291PcdUwX4dUqeVTEZdJ/wCMdPN6vyy8WWWi21SaWEqalw68N+9dAUrPl0Hwi9hXiYpqjNy0hKqmZt5DTSRupR/AeJ8ox7cV6TM0VMUvil2eRcPtq93h/GIdKjWupZ+rNrv8WwrZyj0MlHlCKWb8vyyZ3BctMpCSh50uzGNmW91fHoPjEFnrmr1em0SFNZdQp9YQ1LyqSt1wnkkY3JPgMRGFKUpRUolSickk7kxm7sTXpLWjrpTpefQx6HXEGmqdcSMsuLILSknGRlYCDuBhZJ5CLihYUqW972cnxrbbEcSbhCXy6fKOr8Xq/RdxdNNuyXqddXBN15uXtWSX63FPfOTCgeoZScj3LKTGx9gdkfTC3EB6spnbmneEgrnFhDKSQRlLSNuu3EVYO8bC5hE4045Hap2fPWDqDWbSqGS7T5goQ4RjvWj6za/3kFJ+MRmN0/lGLADslRtSJFkd4yRTakU5yUHKmVnpseNJPM8aB0jSyAEIQgBCEZb0Mty2aYwvU/UhC/1Zpb3DT5EAd5WJxO4aQk80I2KyfV5A9RAGwHZG08o+lVjzOsWpL7FJemWMSXpexlpdX0uHmXHNsJGTw4GMqIjHuv3acuXUKZetbT9qapFCWS2t5JxNzqcYPER+yR5A5I5nfhGP9TL+vnXK5fTKs6JOkSyyJSSaz6PKpPh9dzHNR3P2RgC4UGhyFHl+7lG/XI9d1W6l+/8AKIV1exo7lvZuOzex9zjDVWp1KXPi/wDlfnTx0I9bVkS0ulMxVeGYe5hr6Cff9b+ETRtCUJCUgADYADYQSI/RIEUNWtOq85PM7ZhuE2mGUvlWsOiuPN+L4/3I88MWG6LmkaI2Wz8/NqGUMpPLzUeg/GKC+LvRTgun01SVznJbnMNfmr+EYxedcedU68tTjizlSlHJJidZ2Dqdepp7ml7U7bQsW7WxedTjLVR8Ob9F3vcVdZqs9V5r0idd4yPYSNkoHgBFDCEXkYqKyRxuvXqV6jq1ZOUnq3vbEe2XXGXkPMuLbdbUFIWhWFJI3BBHIx4hH08jrBoVe7WomlVCupJT6RMy4ROIT9CYQeB0Y6DiBI8iIm8aT/J0X4JepVrTuddARND9JU/J/tEgJeRz6pCFAfZVG7EAR/Ua1KbfFjVe06snMpUpZTJVwgltXNDgztxJUEqHmkRyaumh1G2rkqNv1ZnuZ+nTK5Z9O+OJCiCRnmDjIPUEGOwsaH/KHWIKTfVNvqSY4ZatNejzikgYEy0AEk+am8f+hgDViEIQB+kuWkvoU+hS2gcqSk4Kh4Z6Z5Z6ecT6Xk6zej0nOVt1UvSpNoMyMo36qGmRuENp+ikncq5qOTuTmLdaNvSiEJqdeWy0z7TTLqwkK+0rPTy6xMH7rt2WwFVBtfTDSSrH3CKy6vJ9iis3zR0bZrZezjFXmL1IwjrGEmk33yzenJceO7W7SssxKsIl5dpLTSBhKUjAEfuBEf8A1ztr/wAgR72HP9MeheltD/uB/wDg5/pindCs97i/szqaxzCUlGNzTSX+8f5L/jAiD3xeHoxcplKcBf3S8+k/s/sp+14np7+Xm772ll0/0eiPFTroIW7wlPdp8sjmfwjHUWNjY59eqvI0LbHbKMI/o8Pmm2utNPPdyi1x5vhot+n0kkkkkk8yY+QhF0cjEIQgBCEIAkemV1TdkX/RbrkwVO02bS8UD6aOS0fvJKh8Y6z0GpyVboslWKa+l+TnWETDDiTkLQtIUk/cY46xtp2ce1Pb9h6Zylp3hTK7PP09xaJR6RbacT3BOUpVxuIIKSVAc9gIA3jxGOu0fYI1H0jrNutJBnw36TTz4TDfrIGegVug+SjGKf8AjW0w/u9eH+Vlv9+Ph7a2mP8Ad28P8tLf78AaDOIW24ptxCkLQSlSVDBBHMEQiX6z1u2Ll1LrNw2hKT0nSqk/6SmXnGkIW04sZcGEKUMFfERuNjjG0IAjVZ/6m/8A4v5RRwhGMOyiRd/Xn4v3EIQjIjiEIQAhCEAIQhACEIQAhCEAIQhACEIQB//Z" class="logo-img">
+</div>
     <ul class="footer-links">
       <li><a href="#programs" data-en="Programs" data-fr="Programmes">Programs</a></li>
       <li><a href="#how" data-en="How It Works" data-fr="Comment ça marche">How It Works</a></li>
@@ -662,19 +717,15 @@
       });
     }
 
-    // Form submission with honeypot + reCAPTCHA validation
-    function handleSubmit(e) {
+    // Form submission with honeypot + reCAPTCHA + Formspree Ajax
+    async function handleSubmit(e) {
       e.preventDefault();
 
       // 1. Honeypot check — bots fill hidden fields, humans don't
       const honeypot = document.getElementById('_gotcha');
-      if (honeypot && honeypot.value !== '') {
-        // Silent fail — bot detected, do nothing
-        return;
-      }
+      if (honeypot && honeypot.value !== '') return;
 
-      // 2. reCAPTCHA check — requires a real site key to work
-      // Once you've replaced YOUR_SITE_KEY, this will enforce the CAPTCHA
+      // 2. reCAPTCHA check
       const recaptchaResponse = typeof grecaptcha !== 'undefined'
         ? grecaptcha.getResponse()
         : null;
@@ -690,9 +741,51 @@
         return;
       }
 
-      // 3. All checks passed — show success
-      document.querySelector('.signup-form').style.display = 'none';
-      document.getElementById('formSuccess').classList.add('visible');
+      // 3. Collect all form data
+      const form = document.querySelector('.signup-form');
+      const submitBtn = form.querySelector('[type="submit"]');
+      const formData = new FormData(form);
+
+      // Disable button to prevent double submission
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Sending...';
+
+      // 4. Submit to Formspree
+      try {
+        const response = await fetch('https://formspree.io/f/mzdklejy', {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Success — show animated overlay
+          const overlay = document.getElementById('successOverlay');
+          const lang = document.documentElement.lang || 'en';
+          overlay.querySelector('#overlayTitle').textContent =
+            lang === 'fr' ? 'Vous êtes sur la liste !' : "You're on the list!";
+          overlay.querySelector('#overlayMsg').textContent =
+            lang === 'fr' ? 'Nous avons reçu vos informations et vous contacterons bientôt !' : "We've received your info and will be in touch soon!";
+          overlay.querySelector('.success-close').textContent =
+            lang === 'fr' ? 'Fermer' : 'Close';
+          overlay.classList.add('show');
+          form.reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = form.dataset.submitLabel || "Send My Info — Let's Go →";
+        } else {
+          const data = await response.json();
+          const msg = data.errors
+            ? data.errors.map(e => e.message).join(', ')
+            : 'Something went wrong. Please try again.';
+          alert(msg);
+          submitBtn.disabled = false;
+          submitBtn.textContent = form.dataset.submitLabel || 'Send My Info — Let\'s Go →';
+        }
+      } catch (err) {
+        alert('Network error — please check your connection and try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = form.dataset.submitLabel || 'Send My Info — Let\'s Go →';
+      }
     }
 
     // Scroll reveal
@@ -712,5 +805,15 @@
       observer.observe(el);
     });
   </script>
+  <!-- SUCCESS OVERLAY -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-card">
+      <div class="success-checkmark">✓</div>
+      <h3 id="overlayTitle" data-en="You're on the list!" data-fr="Vous êtes sur la liste !">You're on the list!</h3>
+      <p id="overlayMsg" data-en="We've received your info and will be in touch soon!" data-fr="Nous avons reçu vos informations et vous contacterons bientôt !">We've received your info and will be in touch soon!</p>
+      <button class="success-close" onclick="document.getElementById('successOverlay').classList.remove('show')" data-en="Close" data-fr="Fermer">Close</button>
+    </div>
+  </div>
+
 </body>
 </html>
